@@ -76,32 +76,39 @@ function horizontalScroll(e: WheelEvent) {
     left: el.scrollLeft + distance
   })
 }
+
+const activeFile = computed({
+  get: () => store.state.activeFile.filename,
+  set: val => { if (!pending.value) store.setActive(val) }
+})
 </script>
 
 <template>
-  <div
+  <v-tabs
+    v-model="activeFile"
     class="file-selector"
     :class="{ 'has-import-map': showImportMap }"
-    @wheel="horizontalScroll"
     ref="fileSel"
+    color="primary"
+    bg-color="background"
+    density="comfortable"
+    show-arrows
   >
-    <div
+    <v-tab
       v-for="(file, i) in files"
+      :value="file"
       class="file"
-      :class="{ active: store.state.activeFile.filename === file }"
-      @click="store.setActive(file)"
+      size="small"
     >
-      <span class="label">{{
-        file === importMapFile ? 'Import Map' : file
-      }}</span>
+      <span>{{ file }}</span>
       <span v-if="i > 0" class="remove" @click.stop="store.deleteFile(file)">
         <svg class="icon" width="12" height="12" viewBox="0 0 24 24">
           <line stroke="#999" x1="18" y1="6" x2="6" y2="18"></line>
           <line stroke="#999" x1="6" y1="6" x2="18" y2="18"></line>
         </svg>
       </span>
-    </div>
-    <div v-if="pending" class="file pending">
+    </v-tab>
+    <v-tab v-if="pending" class="file pending" size="small">
       <input
         v-model="pendingFilename"
         spellcheck="false"
@@ -110,68 +117,27 @@ function horizontalScroll(e: WheelEvent) {
         @keyup.esc="cancelAddFile"
         @vnodeMounted="focus"
       />
-    </div>
-    <button class="add" @click="startAddFile">+</button>
+    </v-tab>
+    <v-btn variant="text" height="100%" @click="startAddFile">+</v-btn>
 
-    <div v-if="showImportMap" class="import-map-wrapper">
-      <div
-        class="file import-map"
-        :class="{ active: store.state.activeFile.filename === importMapFile }"
-        @click="store.setActive(importMapFile)"
-      >
-        <span class="label">Import Map</span>
-      </div>
-    </div>
-  </div>
+    <v-tab v-if="showImportMap" class="file import-map" size="small" :value="importMapFile">
+      Import Map
+    </v-tab>
+  </v-tabs>
 </template>
 
 <style scoped>
 .file-selector {
-  display: flex;
-  box-sizing: border-box;
-  border-bottom: 1px solid var(--border);
-  background-color: var(--bg);
-  overflow-y: hidden;
-  overflow-x: auto;
-  white-space: nowrap;
-  position: relative;
-  height: var(--header-height);
+  /*border-bottom: 1px solid var(--border);*/
 }
 
-.file-selector::-webkit-scrollbar {
-  height: 1px;
+.file.import-map {
+  /*position: sticky;*/
+  /*right: 0;*/
+  margin-left: auto;
+  background: rgb(var(--v-theme-background)) !important;
 }
 
-.file-selector::-webkit-scrollbar-track {
-  background-color: var(--border);
-}
-
-.file-selector::-webkit-scrollbar-thumb {
-  background-color: var(--color-branding);
-}
-
-.file-selector.has-import-map .add {
-  margin-right: 10px;
-}
-
-.file {
-  display: inline-block;
-  font-size: 13px;
-  font-family: var(--font-code);
-  cursor: pointer;
-  color: var(--text-light);
-  box-sizing: border-box;
-}
-.file.active {
-  color: var(--color-branding);
-  border-bottom: 3px solid var(--color-branding);
-  cursor: text;
-}
-.file span {
-  display: inline-block;
-  padding: 8px 10px 6px;
-  line-height: 20px;
-}
 .file.pending input {
   width: 90px;
   height: 30px;
@@ -184,47 +150,5 @@ function horizontalScroll(e: WheelEvent) {
   margin-left: 6px;
   font-family: var(--font-code);
   font-size: 12px;
-}
-.file .remove {
-  display: inline-block;
-  vertical-align: middle;
-  line-height: 12px;
-  cursor: pointer;
-  padding-left: 0;
-}
-.add {
-  font-size: 18px;
-  font-family: var(--font-code);
-  color: #999;
-  vertical-align: middle;
-  margin-left: 6px;
-  position: relative;
-  top: -1px;
-}
-.add:hover {
-  color: var(--color-branding);
-}
-.icon {
-  margin-top: -1px;
-}
-.import-map-wrapper {
-  position: sticky;
-  margin-left: auto;
-  top: 0;
-  right: 0;
-  padding-left: 30px;
-  background-color: var(--bg);
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 1) 25%
-  );
-}
-.dark .import-map-wrapper {
-  background: linear-gradient(
-    90deg,
-    rgba(26, 26, 26, 0) 0%,
-    rgba(26, 26, 26, 1) 25%
-  );
 }
 </style>

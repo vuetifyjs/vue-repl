@@ -1,4 +1,6 @@
 import { createApp, h, watchEffect } from 'vue'
+import { createVuetify } from 'vuetify'
+import 'vuetify/styles'
 import { Repl, ReplStore } from '../src'
 ;(window as any).process = { env: {} }
 
@@ -50,4 +52,9 @@ const App = {
   }
 }
 
-createApp(App).mount('#app')
+const app = createApp(App)
+const vuetify = createVuetify({
+  theme: { defaultTheme: 'dark'}
+})
+app.use(vuetify)
+app.mount('#app')

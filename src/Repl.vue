@@ -35,7 +35,7 @@ provide('clear-console', toRef(props, 'clearConsole'))
 </script>
 
 <template>
-  <div class="vue-repl">
+  <v-theme-provider with-background class="vue-repl">
     <SplitPane :layout="layout">
       <template #left>
         <Editor />
@@ -47,18 +47,18 @@ provide('clear-console', toRef(props, 'clearConsole'))
         />
       </template>
     </SplitPane>
-  </div>
+  </v-theme-provider>
 </template>
 
 <style scoped>
 .vue-repl {
-  --bg: #fff;
-  --bg-soft: #f8f8f8;
-  --border: #ddd;
-  --text-light: #888;
+  --bg: rgb(var(--v-theme-background));
+  --bg-soft: rgb(var(--v-theme-surface));
+  --border: #383838;
+  --text-light: #aaa;
+  --color-branding: #42d392;
+  --color-branding-dark: #89ddff;
   --font-code: Menlo, Monaco, Consolas, 'Courier New', monospace;
-  --color-branding: #42b883;
-  --color-branding-dark: #416f9c;
   --header-height: 38px;
 
   font-size: 13px;
@@ -67,22 +67,5 @@ provide('clear-console', toRef(props, 'clearConsole'))
   margin: 0;
   overflow: hidden;
   background-color: var(--bg-soft);
-}
-
-.dark .vue-repl {
-  --bg: #1a1a1a;
-  --bg-soft: #242424;
-  --border: #383838;
-  --text-light: #aaa;
-  --color-branding: #42d392;
-  --color-branding-dark: #89ddff;
-}
-
-:deep(button) {
-  border: none;
-  outline: none;
-  cursor: pointer;
-  margin: 0;
-  background-color: transparent;
 }
 </style>

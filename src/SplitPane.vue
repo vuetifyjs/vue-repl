@@ -37,7 +37,7 @@ function dragMove(e: MouseEvent) {
       ? container.value.offsetHeight
       : container.value.offsetWidth
     const dp = position - startPosition
-    state.split = startSplit + ~~((dp / totalSize) * 100)
+    state.split = startSplit + (dp / totalSize) * 100
   }
 }
 
@@ -122,10 +122,6 @@ function dragEnd() {
   border-radius: 8px;
   transform: translateX(-50%);
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
-}
-
-.dark .toggler {
-  background-color: var(--bg);
 }
 
 /* vertical */

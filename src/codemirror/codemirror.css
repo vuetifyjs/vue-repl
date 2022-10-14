@@ -2,32 +2,10 @@
 
 .CodeMirror {
   color: var(--symbols);
-  --symbols: #777;
-  --base: #545281;
-  --comment: hsl(210, 25%, 60%);
-  --keyword: #af4ab1;
-  --variable: var(--base);
   --function: #c25205;
-  --string: #2ba46d;
-  --number: #c25205;
-  --tags: #dd0000;
-  --brackets: var(--comment);
   --qualifier: #ff6032;
   --important: var(--string);
-  --attribute: #9c3eda;
-  --property: #6182b8;
 
-  --selected-bg: #d7d4f0;
-  --selected-bg-non-focus: #d9d9d9;
-  --cursor: #000;
-
-  direction: ltr;
-  font-family: var(--font-code);
-  height: auto;
-}
-
-.dark .CodeMirror {
-  color: var(--symbols);
   --symbols: #89ddff;
   --base: #a6accd;
   --comment: #6d6d6d;
@@ -43,6 +21,10 @@
 
   --selected-bg: rgba(255, 255, 255, 0.1);
   --selected-bg-non-focus: rgba(255, 255, 255, 0.15);
+
+  direction: ltr;
+  font-family: var(--font-code);
+  height: auto;
 }
 
 /* PADDING */
