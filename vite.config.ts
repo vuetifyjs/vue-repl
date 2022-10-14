@@ -1,5 +1,6 @@
 import { defineConfig, Plugin } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import vuetify from 'vite-plugin-vuetify'
 
 const genStub: Plugin = {
   name: 'gen-stub',
@@ -14,7 +15,13 @@ const genStub: Plugin = {
 }
 
 export default defineConfig({
-  plugins: [vue(), genStub],
+  plugins: [
+    vue(),
+    vuetify({
+      styles: { configFile: 'src/settings.scss' },
+    }),
+    genStub,
+  ],
   build: {
     target: 'esnext',
     minify: false,
