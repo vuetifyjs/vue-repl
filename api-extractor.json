@@ -6,7 +6,8 @@
   "mainEntryPointFilePath": "./dist/src/index.d.ts",
 
   "dtsRollup": {
-    "enabled": true
+    "enabled": true,
+    "untrimmedFilePath": "./dist/repl.d.ts"
   },
 
   "apiReport": {
