@@ -25,6 +25,7 @@ export default defineConfig({
   build: {
     target: 'esnext',
     minify: false,
+    sourcemap: true,
     lib: {
       entry: './src/index.ts',
       formats: ['es'],
