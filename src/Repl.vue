@@ -59,7 +59,7 @@ provide('clear-console', toRef(props, 'clearConsole'))
   --color-branding: #42d392;
   --color-branding-dark: #89ddff;
   --font-code: Menlo, Monaco, Consolas, 'Courier New', monospace;
-  --header-height: 38px;
+  --header-height: 44px;
 
   font-size: 13px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
