@@ -66,16 +66,16 @@ function doneAddFile() {
 }
 
 const fileSel = ref(null)
-function horizontalScroll(e: WheelEvent) {
-  e.preventDefault()
-  const el = fileSel.value! as HTMLElement
-  const direction =
-    Math.abs(e.deltaX) >= Math.abs(e.deltaY) ? e.deltaX : e.deltaY
-  const distance = 30 * (direction > 0 ? 1 : -1)
-  el.scrollTo({
-    left: el.scrollLeft + distance
-  })
-}
+// function horizontalScroll(e: WheelEvent) {
+//   e.preventDefault()
+//   const el = fileSel.value! as HTMLElement
+//   const direction =
+//     Math.abs(e.deltaX) >= Math.abs(e.deltaY) ? e.deltaX : e.deltaY
+//   const distance = 30 * (direction > 0 ? 1 : -1)
+//   el.scrollTo({
+//     left: el.scrollLeft + distance
+//   })
+// }
 
 const activeFile = computed({
   get: () => store.state.activeFile.filename,
