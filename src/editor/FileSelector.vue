@@ -101,12 +101,7 @@ const activeFile = computed({
       size="small"
     >
       <span>{{ file }}</span>
-      <span v-if="i > 0" class="remove" @click.stop="store.deleteFile(file)">
-        <svg class="icon" width="12" height="12" viewBox="0 0 24 24">
-          <line stroke="#999" x1="18" y1="6" x2="6" y2="18"></line>
-          <line stroke="#999" x1="6" y1="6" x2="18" y2="18"></line>
-        </svg>
-      </span>
+      <v-icon v-if="i > 0" @click.stop="store.deleteFile(file)" icon="mdi-close" class="ms-2 remove" />
     </v-tab>
     <v-tab v-if="pending" class="file pending" size="small">
       <input
@@ -118,7 +113,9 @@ const activeFile = computed({
         @vnodeMounted="focus"
       />
     </v-tab>
-    <v-btn variant="text" height="100%" @click="startAddFile">+</v-btn>
+    <v-btn variant="text" height="100%" @click="startAddFile">
+      <v-icon icon="mdi-plus" />
+    </v-btn>
 
     <v-tab v-if="showImportMap" class="file import-map" size="small" :value="importMapFile">
       Import Map
@@ -127,8 +124,8 @@ const activeFile = computed({
 </template>
 
 <style scoped>
-.file-selector {
-  /*border-bottom: 1px solid var(--border);*/
+.remove {
+  align-self: flex-end;
 }
 
 .file.import-map {
