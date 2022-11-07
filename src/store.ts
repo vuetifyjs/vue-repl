@@ -70,6 +70,7 @@ export interface Store {
   getImportMap: () => any
   initialShowOutput: boolean
   initialOutputMode: OutputModes
+  getLinks: () => any
 }
 
 export interface StoreOptions {
@@ -133,6 +134,7 @@ export class ReplStore implements Store {
     })
 
     this.initImportMap()
+    this.initLinks()
   }
 
   // don't start compiling until the options are set
@@ -193,6 +195,7 @@ export class ReplStore implements Store {
     this.state.mainFile = mainFile
     this.state.files = files
     this.initImportMap()
+    this.initLinks()
     this.setActive(mainFile)
     this.forceSandboxReset()
   }
@@ -228,6 +231,18 @@ export class ReplStore implements Store {
           map.code = JSON.stringify(json, null, 2)
         }
       } catch (e) {}
+    }
+  }
+
+  private initLinks() {
+    const links = this.state.files['links.json']
+    if (!links) {
+      this.state.files['links.json'] = new File(
+        'links.json',
+        JSON.stringify({
+          css: []
+        }, null, 2)
+      )
     }
   }
 
@@ -280,5 +295,15 @@ export class ReplStore implements Store {
     this.setImportMap(importMap)
     this.forceSandboxReset()
     console.info(`[@vue/repl] Now using default Vue version`)
+  }
+
+  getLinks() {
+    try {
+      return JSON.parse(this.state.files['links.json'].code)
+    } catch (e) {
+      this.state.errors = [
+        `Syntax error in links.json: ${(e as Error).message}`
+      ]
+    }
   }
 }

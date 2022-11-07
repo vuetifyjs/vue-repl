@@ -48,6 +48,17 @@ watch(
   }
 )
 
+watch(
+  () => store.state.files['links.json'].code,
+  () => {
+    try {
+      createSandbox()
+    } catch (e) {
+      store.state.errors = [e as Error]
+    }
+  }
+)
+
 // reset sandbox when version changes
 watch(() => store.state.resetFlip, createSandbox)
 
@@ -85,10 +96,23 @@ function createSandbox() {
   if (!importMap.imports.vue) {
     importMap.imports.vue = store.state.vueRuntimeURL
   }
-  const sandboxSrc = srcdoc.replace(
-    /<!--IMPORT_MAP-->/,
-    JSON.stringify(importMap)
-  )
+  
+  const links = store.getLinks()
+
+  if (!links.css) {
+    links.css = []
+  }
+  
+  const sandboxSrc = srcdoc
+    .replace(
+      /<!--IMPORT_MAP-->/,
+      JSON.stringify(importMap)
+    )
+    .replace(
+      /<!--CSS-->/,
+      links.css.map((link: string) => `<link rel="stylesheet" type="text/css" href="${link}" />`).join('\n')
+    )
+
   sandbox.srcdoc = sandboxSrc
   container.value.appendChild(sandbox)
 

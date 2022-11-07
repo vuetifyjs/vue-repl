@@ -7,10 +7,11 @@ const store = inject('store') as Store
 const pending = ref(false)
 const pendingFilename = ref('Comp.vue')
 const importMapFile = 'import-map.json'
+const linksFile = 'links.json'
 const showImportMap = inject('import-map') as Ref<boolean>
 const files = computed(() =>
   Object.entries(store.state.files)
-    .filter(([name, file]) => name !== importMapFile && !file.hidden)
+    .filter(([name, file]) => ![importMapFile, linksFile].includes(name) && !file.hidden)
     .map(([name]) => name)
 )
 
@@ -119,6 +120,9 @@ const activeFile = computed({
 
     <v-tab v-if="showImportMap" class="file import-map" size="small" :value="importMapFile">
       Import Map
+    </v-tab>
+    <v-tab class="file" size="small" :value="linksFile">
+      Links
     </v-tab>
   </v-tabs>
 </template>
