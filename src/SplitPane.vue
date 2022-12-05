@@ -11,9 +11,11 @@ const container = ref()
 const store = inject('store') as Store
 const showOutput = ref(store.initialShowOutput)
 
+const savedSplit = parseFloat(localStorage.getItem('vue-repl:split') ?? '')
+
 const state = reactive({
   dragging: false,
-  split: 50
+  split: !isNaN(savedSplit) ? savedSplit : 50,
 })
 
 const boundSplit = computed(()=>{
@@ -43,6 +45,8 @@ function dragMove(e: MouseEvent) {
 
 function dragEnd() {
   state.dragging = false
+
+  localStorage.setItem('vue-repl:split', state.split.toString())
 }
 </script>
 
