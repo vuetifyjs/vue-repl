@@ -4,6 +4,9 @@
 
 <script setup lang="ts">
 import { ref, onMounted, watchEffect, inject } from 'vue'
+import prettier from 'prettier/standalone'
+import parserBabel from 'prettier/parser-babel'
+import parserHtml from 'prettier/parser-html'
 import { debounce } from '../utils'
 import CodeMirror from './codemirror'
 
@@ -57,6 +60,13 @@ onMounted(() => {
 
   editor.on('change', () => {
     emit('change', editor.getValue())
+  })
+
+  editor.on('blur', () => {
+    emit('change', prettier.format(
+      editor.getValue(),
+      { parser: 'html', plugins: [parserBabel, parserHtml] }
+    ))
   })
 
   watchEffect(() => {
