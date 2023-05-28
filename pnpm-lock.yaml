@@ -2,11 +2,15 @@ lockfileVersion: 5.4
 
 specifiers:
   '@babel/types': ^7.15.6
+  '@emmetio/abbreviation': ^2.3.3
+  '@emmetio/codemirror-plugin': ^1.2.4
+  '@emmetio/css-abbreviation': ^2.1.8
   '@microsoft/api-extractor': ^7.19.2
   '@types/codemirror': ^5.60.2
   '@types/node': ^16.11.12
   '@vitejs/plugin-vue': ^3.0.0
   codemirror: ^5.62.3
+  emmet: ^2.4.4
   fflate: ^0.7.3
   hash-sum: ^2.0.0
   rimraf: ^3.0.2
@@ -21,11 +25,15 @@ specifiers:
 
 devDependencies:
   '@babel/types': 7.17.12
+  '@emmetio/abbreviation': 2.3.3
+  '@emmetio/codemirror-plugin': 1.2.4
+  '@emmetio/css-abbreviation': 2.1.8
   '@microsoft/api-extractor': 7.24.0
   '@types/codemirror': 5.60.5
   '@types/node': 16.11.36
   '@vitejs/plugin-vue': 3.1.0_vite@3.1.3+vue@3.2.39
   codemirror: 5.65.3
+  emmet: 2.4.4
   fflate: 0.7.3
   hash-sum: 2.0.0
   rimraf: 3.0.2
@@ -59,6 +67,26 @@ packages:
     dependencies:
       '@babel/helper-validator-identifier': 7.16.7
       to-fast-properties: 2.0.0
+    dev: true
+
+  /@emmetio/abbreviation/2.3.3:
+    resolution: {integrity: sha512-mgv58UrU3rh4YgbE/TzgLQwJ3pFsHHhCLqY20aJq+9comytTXUDNGG/SMtSeMJdkpxgXSXunBGLD8Boka3JyVA==}
+    dependencies:
+      '@emmetio/scanner': 1.0.4
+    dev: true
+
+  /@emmetio/codemirror-plugin/1.2.4:
+    resolution: {integrity: sha512-wVw2gqI6X+uVWYVRtTVymzTgbo4hEZIcPCNj4xrXw4l/+L3Qa+tAC/yf+Xy9nenRPCqRq0RLqGiQL+Qf/wYE9Q==}
+    dev: true
+
+  /@emmetio/css-abbreviation/2.1.8:
+    resolution: {integrity: sha512-s9yjhJ6saOO/uk1V74eifykk2CBYi01STTK3WlXWGOepyKa23ymJ053+DNQjpFcy1ingpaO7AxCcwLvHFY9tuw==}
+    dependencies:
+      '@emmetio/scanner': 1.0.4
+    dev: true
+
+  /@emmetio/scanner/1.0.4:
+    resolution: {integrity: sha512-IqRuJtQff7YHHBk4G8YZ45uB9BaAGcwQeVzgj/zj8/UdOhtQpEIupUhSk8dys6spFIWVZVeK20CzGEnqR5SbqA==}
     dev: true
 
   /@esbuild/android-arm/0.15.9:
@@ -437,6 +465,13 @@ packages:
         optional: true
     dependencies:
       ms: 2.1.2
+    dev: true
+
+  /emmet/2.4.4:
+    resolution: {integrity: sha512-v8Mwpjym55CS3EjJgiCLWUB3J2HSR93jhzXW325720u8KvYxdI2voYLstW3pHBxFz54H6jFjayR9G4LfTG0q+g==}
+    dependencies:
+      '@emmetio/abbreviation': 2.3.3
+      '@emmetio/css-abbreviation': 2.1.8
     dev: true
 
   /esbuild-android-64/0.15.9:

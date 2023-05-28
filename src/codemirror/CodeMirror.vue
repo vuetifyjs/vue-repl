@@ -29,7 +29,19 @@ onMounted(() => {
     autoCloseBrackets: true,
     autoCloseTags: true,
     foldGutter: true,
-    gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter']
+    gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
+    extraKeys: {
+      'Tab': 'emmetExpandAbbreviation',
+      'Esc': 'emmetResetAbbreviation',
+      'Enter': 'emmetInsertLineBreak'
+    },
+    emmet: {
+      mark: true,
+      markTagPairs: true,
+      previewOpenTag: true,
+      preview: true,
+      autoRenameTags: true,
+    }
   }
 
   const editor = CodeMirror(el.value!, {
@@ -39,6 +51,7 @@ onMounted(() => {
     tabSize: 2,
     lineWrapping: true,
     lineNumbers: true,
+    inputStyle: 'contenteditable',
     ...addonOptions
   })
 
