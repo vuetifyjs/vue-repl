@@ -15,6 +15,7 @@ export interface Props {
   mode?: string
   value?: string
   readonly?: boolean
+  extension?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -68,7 +69,7 @@ onMounted(() => {
       : props.mode === 'htmlmixed' ? 'html'
       : props.mode === 'javascript' ? 'babel'
       : props.mode === 'css' ? 'postcss'
-      : props.mode
+      : props.extension || props.mode
     emit('change', prettier.format(
       editor.getValue(),
       {

@@ -19,6 +19,11 @@ const activeMode = computed(() => {
     : filename.endsWith('.css') ? 'css'
     : 'javascript'
 })
+
+const extension = computed(() => {
+  const { filename } = store.state.activeFile
+  return filename.split('.').pop()
+})
 </script>
 
 <template>
@@ -28,6 +33,7 @@ const activeMode = computed(() => {
       @change="onChange"
       :value="store.state.activeFile.code"
       :mode="activeMode"
+      :extension="extension"
     />
     <Message :err="store.state.errors[0]" />
   </div>
