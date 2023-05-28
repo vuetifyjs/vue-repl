@@ -7,6 +7,7 @@ import { ref, onMounted, watchEffect, inject } from 'vue'
 import prettier from 'prettier/standalone'
 import parserBabel from 'prettier/parser-babel'
 import parserHtml from 'prettier/parser-html'
+import parserPostcss from 'prettier/parser-postcss'
 import { debounce } from '../utils'
 import CodeMirror from './codemirror'
 
@@ -63,11 +64,16 @@ onMounted(() => {
   })
 
   editor.on('blur', () => {
+    const parser = props.mode === 'vue' ? 'html'
+      : props.mode === 'htmlmixed' ? 'html'
+      : props.mode === 'javascript' ? 'babel'
+      : props.mode === 'css' ? 'postcss'
+      : props.mode
     emit('change', prettier.format(
       editor.getValue(),
       {
-        parser: 'html',
-        plugins: [parserBabel, parserHtml],
+        parser,
+        plugins: [parserBabel, parserHtml, parserPostcss],
         semi: false,
         singleQuote: true,
         arrowParens: 'avoid',
