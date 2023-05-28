@@ -65,21 +65,27 @@ onMounted(() => {
   })
 
   editor.on('blur', () => {
-    const parser = props.mode === 'vue' ? 'html'
-      : props.mode === 'htmlmixed' ? 'html'
-      : props.mode === 'javascript' ? 'babel'
-      : props.mode === 'css' ? 'postcss'
+    const parser = props.extension === 'vue' ? 'html'
+      : props.extension === 'html' ? 'html'
+      : props.extension === 'css' ? 'css'
+      : props.extension === 'js' ? 'babel'
+      : props.extension === 'ts' ? 'babel'
       : props.extension || props.mode
-    emit('change', prettier.format(
-      editor.getValue(),
-      {
-        parser,
-        plugins: [parserBabel, parserHtml, parserPostcss],
-        semi: false,
-        singleQuote: true,
-        arrowParens: 'avoid',
-      }
-    ))
+
+    const options = {
+      parser,
+      plugins: [parserBabel, parserHtml, parserPostcss],
+      semi: false,
+      singleQuote: true,
+      arrowParens: 'avoid' as const,
+    }
+
+    let code = editor.getValue()
+    try {
+      code = prettier.format(code, options)
+    } catch (err) {}
+
+    emit('change', code)
   })
 
   watchEffect(() => {
