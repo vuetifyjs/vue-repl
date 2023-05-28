@@ -65,7 +65,13 @@ onMounted(() => {
   editor.on('blur', () => {
     emit('change', prettier.format(
       editor.getValue(),
-      { parser: 'html', plugins: [parserBabel, parserHtml] }
+      {
+        parser: 'html',
+        plugins: [parserBabel, parserHtml],
+        semi: false,
+        singleQuote: true,
+        arrowParens: 'avoid',
+      }
     ))
   })
 
