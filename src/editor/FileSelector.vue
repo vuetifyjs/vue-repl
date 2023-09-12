@@ -116,7 +116,7 @@ const activeFile = computed({
       class="file"
       size="small"
     >
-      <span>{{ file }}</span>
+      <span>{{ stripSrcPrefix(file) }}</span>
       <v-icon v-if="i > 0" @click.stop="store.deleteFile(file)" icon="mdi-close" class="ms-2 remove" />
     </v-tab>
     <v-tab v-if="pending" class="file pending" size="small">
@@ -133,11 +133,11 @@ const activeFile = computed({
       <v-icon icon="mdi-plus" />
     </v-btn>
 
-    <v-tab v-if="showTsConfig" class="file" size="small" :value="tsconfigFile">
+    <v-tab v-if="showTsConfig" class="file import-map" size="small" :value="tsconfigFile">
       tsconfig.json
     </v-tab>
 
-    <v-tab v-if="showImportMap" class="file import-map" size="small" :value="importMapFile">
+    <v-tab v-if="showImportMap" class="file" size="small" :value="importMapFile">
       Import Map
     </v-tab>
     <v-tab class="file" size="small" :value="linksFile">

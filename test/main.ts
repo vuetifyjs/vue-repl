@@ -46,6 +46,7 @@ const App = {
         store,
         theme: 'dark',
         editor: MonacoEditor as any as EditorComponentType,
+        // editor: CodeMirrorEditor as any as EditorComponentType,
         // layout: 'vertical',
         ssr: true,
         sfcOptions: {

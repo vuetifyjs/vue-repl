@@ -17,7 +17,6 @@ const genStub: Plugin = {
 
 export default mergeConfig(base, {
   plugins: [
-    vue(),
     vuetify({
       styles: { configFile: 'src/settings.scss' },
     }),

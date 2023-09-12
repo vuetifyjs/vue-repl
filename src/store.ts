@@ -14,6 +14,7 @@ const defaultMainFile = 'src/App.vue'
 
 export const importMapFile = 'import-map.json'
 export const tsconfigFile = 'tsconfig.json'
+export const linksFile = 'links.json'
 
 const welcomeCode = `
 <script setup>
@@ -386,10 +387,10 @@ export class ReplStore implements Store {
   }
 
   private initLinks() {
-    const links = this.state.files['links.json']
+    const links = this.state.files[linksFile]
     if (!links) {
-      this.state.files['links.json'] = new File(
-        'links.json',
+      this.state.files[linksFile] = new File(
+        linksFile,
         JSON.stringify({
           css: []
         }, null, 2)
@@ -456,7 +457,7 @@ export class ReplStore implements Store {
 
   getLinks() {
     try {
-      return JSON.parse(this.state.files['links.json'].code)
+      return JSON.parse(this.state.files[linksFile].code)
     } catch (e) {
       this.state.errors = [
         `Syntax error in links.json: ${(e as Error).message}`
@@ -473,8 +474,7 @@ function setFile(
   // prefix user files with src/
   // for cleaner Volar path completion when using Monaco editor
   const normalized =
-    filename !== importMapFile &&
-    filename !== tsconfigFile &&
+    ![importMapFile, tsconfigFile, linksFile].includes(filename) && 
     !filename.startsWith('src/')
       ? `src/${filename}`
       : filename
