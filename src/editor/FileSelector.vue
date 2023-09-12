@@ -1,17 +1,26 @@
 <script setup lang="ts">
-import { Store } from '../store'
+import { Store, importMapFile, tsconfigFile, stripSrcPrefix } from '../store'
 import { computed, inject, ref, VNode, Ref } from 'vue'
 
 const store = inject('store') as Store
 
-const pending = ref(false)
+/**
+ * When `true`: indicates adding a new file
+ * When `string`: indicates renaming a file, and holds the old filename in case
+ * of cancel.
+ */
+const pending = ref<boolean | string>(false)
+/**
+ * Text shown in the input box when editing a file's name
+ * This is a display name so it should always strip off the `src/` prefix.
+ */
 const pendingFilename = ref('Comp.vue')
-const importMapFile = 'import-map.json'
 const linksFile = 'links.json'
+const showTsConfig = inject<Ref<boolean>>('tsconfig')
 const showImportMap = inject('import-map') as Ref<boolean>
 const files = computed(() =>
   Object.entries(store.state.files)
-    .filter(([name, file]) => ![importMapFile, linksFile].includes(name) && !file.hidden)
+    .filter(([name, file]) => ![importMapFile, linksFile, tsconfigFile].includes(name) && !file.hidden)
     .map(([name]) => name)
 )
 
@@ -21,8 +30,8 @@ function startAddFile() {
 
   while (true) {
     let hasConflict = false
-    for (const file in store.state.files) {
-      if (file === name) {
+    for (const filename in store.state.files) {
+      if (stripSrcPrefix(filename) === name) {
         hasConflict = true
         name = `Comp${++i}.vue`
         break
@@ -37,7 +46,7 @@ function startAddFile() {
   pending.value = true
 }
 
-function cancelAddFile() {
+function cancelNameFile() {
   pending.value = false
 }
 
@@ -45,38 +54,44 @@ function focus({ el }: VNode) {
   ;(el as HTMLInputElement).focus()
 }
 
-function doneAddFile() {
+function doneNameFile() {
   if (!pending.value) return
-  const filename = pendingFilename.value
+  // add back the src prefix
+  const filename = 'src/' + pendingFilename.value
+  const oldFilename = pending.value === true ? '' : pending.value
 
-  if (!/\.(vue|js|ts|css)$/.test(filename)) {
+  if (!/\.(vue|js|ts|css|json)$/.test(filename)) {
     store.state.errors = [
-      `Playground only supports *.vue, *.js, *.ts, *.css files.`
+      `Playground only supports *.vue, *.js, *.ts, *.css, *.json files.`,
     ]
     return
   }
 
-  if (filename in store.state.files) {
+  if (filename !== oldFilename && filename in store.state.files) {
     store.state.errors = [`File "${filename}" already exists.`]
     return
   }
 
   store.state.errors = []
-  cancelAddFile()
-  store.addFile(filename)
+  cancelNameFile()
+
+  if (filename === oldFilename) {
+    return
+  }
+
+  if (oldFilename) {
+    store.renameFile(oldFilename, filename)
+  } else {
+    store.addFile(filename)
+  }
+}
+
+function editFileName(file: string) {
+  pendingFilename.value = stripSrcPrefix(file)
+  pending.value = file
 }
 
 const fileSel = ref(null)
-// function horizontalScroll(e: WheelEvent) {
-//   e.preventDefault()
-//   const el = fileSel.value! as HTMLElement
-//   const direction =
-//     Math.abs(e.deltaX) >= Math.abs(e.deltaY) ? e.deltaX : e.deltaY
-//   const distance = 30 * (direction > 0 ? 1 : -1)
-//   el.scrollTo({
-//     left: el.scrollLeft + distance
-//   })
-// }
 
 const activeFile = computed({
   get: () => store.state.activeFile.filename,
@@ -108,15 +123,19 @@ const activeFile = computed({
       <input
         v-model="pendingFilename"
         spellcheck="false"
-        @blur="doneAddFile"
-        @keyup.enter="doneAddFile"
-        @keyup.esc="cancelAddFile"
+        @blur="doneNameFile"
+        @keyup.enter="doneNameFile"
+        @keyup.esc="cancelNameFile"
         @vnodeMounted="focus"
       />
     </v-tab>
     <v-btn variant="text" height="100%" @click="startAddFile">
       <v-icon icon="mdi-plus" />
     </v-btn>
+
+    <v-tab v-if="showTsConfig" class="file" size="small" :value="tsconfigFile">
+      tsconfig.json
+    </v-tab>
 
     <v-tab v-if="showImportMap" class="file import-map" size="small" :value="importMapFile">
       Import Map

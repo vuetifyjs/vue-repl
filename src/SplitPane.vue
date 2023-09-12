@@ -2,7 +2,7 @@
 import { ref, reactive, computed, inject } from 'vue'
 import { Store } from './store'
 
-const props = defineProps<{ layout?: string }>()
+const props = defineProps<{ layout?: 'horizontal' | 'vertical' }>()
 const isVertical = computed(() => props.layout === 'vertical')
 
 const container = ref()
@@ -18,10 +18,10 @@ const state = reactive({
   split: !isNaN(savedSplit) ? savedSplit : 50,
 })
 
-const boundSplit = computed(()=>{
+const boundSplit = computed(() => {
   const { split } = state
   return split < 20 ? 20 : split > 80 ? 80 : split
-}) 
+})
 
 let startPosition = 0
 let startSplit = 0
@@ -57,7 +57,7 @@ function dragEnd() {
     :class="{
       dragging: state.dragging,
       'show-output': showOutput,
-      vertical: isVertical
+      vertical: isVertical,
     }"
     @mousemove="dragMove"
     @mouseup="dragEnd"

@@ -7,7 +7,6 @@
     "useDefineForClassFields": false,
     "module": "esnext",
     "moduleResolution": "node",
-    "jsx": "preserve",
     "allowJs": false,
     "strict": true,
     "noUnusedLocals": true,
@@ -16,7 +15,9 @@
     "esModuleInterop": true,
     "removeComments": false,
     "lib": ["esnext", "dom"],
-    "rootDir": "."
+    "jsx": "preserve",
+    "rootDir": ".",
+    "skipLibCheck": true
   },
   "include": ["src", "test", "vite.config.ts"]
 }

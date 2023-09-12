@@ -1,6 +1,7 @@
-import { defineConfig, Plugin } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vuetify from 'vite-plugin-vuetify'
+import { Plugin, mergeConfig } from 'vite'
+import base from './vite.preview.config'
 
 const genStub: Plugin = {
   name: 'gen-stub',
@@ -9,12 +10,12 @@ const genStub: Plugin = {
     this.emitFile({
       type: 'asset',
       fileName: 'ssr-stub.js',
-      source: `module.exports = {}`
+      source: `module.exports = {}`,
     })
-  }
+  },
 }
 
-export default defineConfig({
+export default mergeConfig(base, {
   plugins: [
     vue(),
     vuetify({
@@ -22,17 +23,38 @@ export default defineConfig({
     }),
     genStub,
   ],
+  optimizeDeps: {
+    // avoid late discovered deps
+    include: [
+      'path-browserify',
+      'onigasm',
+      'typescript',
+      '@volar/cdn',
+      '@vue/language-service',
+      'monaco-editor-core/esm/vs/editor/editor.worker',
+      '@volar/monaco/worker',
+      'vue/server-renderer',
+    ],
+  },
+  base: './',
   build: {
     target: 'esnext',
     minify: false,
     sourcemap: true,
     lib: {
-      entry: './src/index.ts',
+      entry: {
+        'vue-repl': './src/index.ts',
+        'monaco-editor': './src/editor/MonacoEditor.vue',
+        'codemirror-editor': './src/editor/CodeMirrorEditor.vue',
+      },
       formats: ['es'],
-      fileName: () => 'vue-repl.js'
+      fileName: () => '[name].js',
     },
     rollupOptions: {
-      external: ['vue', 'vue/compiler-sfc', /^vuetify/]
-    }
-  }
+      output: {
+        chunkFileNames: 'chunks/[name]-[hash].js',
+      },
+      external: ['vue', 'vue/compiler-sfc', /^vuetify/],
+    },
+  },
 })

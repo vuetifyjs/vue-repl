@@ -6,7 +6,7 @@ import {
   walkIdentifiers,
   extractIdentifiers,
   isInDestructureAssignment,
-  isStaticProperty
+  isStaticProperty,
 } from 'vue/compiler-sfc'
 import { ExportSpecifier, Identifier, Node } from '@babel/types'
 
@@ -28,7 +28,7 @@ export function compileModulesForPreview(store: Store, isSSR = false) {
         const file = store.state.files[filename]
         if (!seen.has(file)) {
           processed.push(
-            `\nwindow.__css__ += ${JSON.stringify(file.compiled.css)}`
+            `\nwindow.__css__.push(${JSON.stringify(file.compiled.css)})`
           )
         }
       }
@@ -60,35 +60,60 @@ function processFile(
     return processHtmlFile(store, file.code, file.filename, processed, seen)
   }
 
-  let [js, importedFiles] = processModule(
+  let {
+    code: js,
+    importedFiles,
+    hasDynamicImport,
+  } = processModule(
     store,
     isSSR ? file.compiled.ssr : file.compiled.js,
     file.filename
   )
+  processChildFiles(
+    store,
+    importedFiles,
+    hasDynamicImport,
+    processed,
+    seen,
+    isSSR
+  )
   // append css
-  if (!isSSR && file.compiled.css) {
-    js += `\nwindow.__css__ += ${JSON.stringify(file.compiled.css)}`
+  if (file.compiled.css && !isSSR) {
+    js += `\nwindow.__css__.push(${JSON.stringify(file.compiled.css)})`
   }
-  // crawl child imports
-  if (importedFiles.size) {
-    for (const imported of importedFiles) {
-      processFile(store, store.state.files[imported], processed, seen, isSSR)
-    }
-  }
+
   // push self
   processed.push(js)
 }
 
-function processModule(
+function processChildFiles(
   store: Store,
-  src: string,
-  filename: string
-): [string, Set<string>] {
+  importedFiles: Set<string>,
+  hasDynamicImport: boolean,
+  processed: string[],
+  seen: Set<File>,
+  isSSR: boolean
+) {
+  if (hasDynamicImport) {
+    // process all files
+    for (const file of Object.values(store.state.files)) {
+      if (seen.has(file)) continue
+      processFile(store, file, processed, seen, isSSR)
+    }
+  } else if (importedFiles.size > 0) {
+    // crawl child imports
+    for (const imported of importedFiles) {
+      processFile(store, store.state.files[imported], processed, seen, isSSR)
+    }
+  }
+}
+
+function processModule(store: Store, src: string, filename: string) {
   const s = new MagicString(src)
 
   const ast = babelParse(src, {
     sourceFilename: filename,
-    sourceType: 'module'
+    sourceType: 'module',
   }).program.body
 
   const idToImportMap = new Map<string, string>()
@@ -96,10 +121,20 @@ function processModule(
   const importedFiles = new Set<string>()
   const importToIdMap = new Map<string, string>()
 
+  function resolveImport(raw: string): string | undefined {
+    const files = store.state.files
+    let resolved = raw
+    const file =
+      files[resolved] ||
+      files[(resolved = raw + '.ts')] ||
+      files[(resolved = raw + '.js')]
+    return file ? resolved : undefined
+  }
+
   function defineImport(node: Node, source: string) {
-    const filename = source.replace(/^\.\/+/, '')
-    if (!(filename in store.state.files)) {
-      throw new Error(`File "${filename}" does not exist.`)
+    const filename = resolveImport(source.replace(/^\.\/+/, 'src/'))
+    if (!filename) {
+      throw new Error(`File "${source}" does not exist.`)
     }
     if (importedFiles.has(filename)) {
       return importToIdMap.get(filename)!
@@ -255,11 +290,13 @@ function processModule(
   }
 
   // 4. convert dynamic imports
-  ;(walk as any)(ast, {
+  let hasDynamicImport = false
+  walk(ast, {
     enter(node: Node, parent: Node) {
       if (node.type === 'Import' && parent.type === 'CallExpression') {
         const arg = parent.arguments[0]
         if (arg.type === 'StringLiteral' && arg.value.startsWith('./')) {
+          hasDynamicImport = true
           s.overwrite(node.start!, node.start! + 6, dynamicImportKey)
           s.overwrite(
             arg.start!,
@@ -268,10 +305,14 @@ function processModule(
           )
         }
       }
-    }
+    },
   })
 
-  return [s.toString(), importedFiles]
+  return {
+    code: s.toString(),
+    importedFiles,
+    hasDynamicImport,
+  }
 }
 
 const scriptRE = /<script\b(?:\s[^>]*>|>)([^]*?)<\/script>/gi
@@ -289,12 +330,19 @@ function processHtmlFile(
   let jsCode = ''
   const html = src
     .replace(scriptModuleRE, (_, content) => {
-      const [code, importedFiles] = processModule(store, content, filename)
-      if (importedFiles.size) {
-        for (const imported of importedFiles) {
-          processFile(store, store.state.files[imported], deps, seen, false)
-        }
-      }
+      const { code, importedFiles, hasDynamicImport } = processModule(
+        store,
+        content,
+        filename
+      )
+      processChildFiles(
+        store,
+        importedFiles,
+        hasDynamicImport,
+        deps,
+        seen,
+        false
+      )
       jsCode += '\n' + code
       return ''
     })

@@ -8,17 +8,21 @@ import {
   watch,
   WatchStopHandle,
   inject,
-  Ref
+  Ref,
 } from 'vue'
 import srcdoc from './srcdoc.html?raw'
 import { PreviewProxy } from './PreviewProxy'
 import { compileModulesForPreview } from './moduleCompiler'
 import { Store } from '../store'
+import { Props } from '../Repl.vue'
 
 const props = defineProps<{ show: boolean; ssr: boolean }>()
 
 const store = inject('store') as Store
 const clearConsole = inject('clear-console') as Ref<boolean>
+
+const previewOptions = inject('preview-options') as Props['previewOptions']
+
 const container = ref()
 const runtimeError = ref()
 const runtimeWarning = ref()
@@ -32,14 +36,9 @@ onMounted(createSandbox)
 
 // reset sandbox when import map changes
 watch(
-  () => store.state.files['import-map.json'].code,
-  (raw) => {
+  () => store.getImportMap(),
+  () => {
     try {
-      const map = JSON.parse(raw)
-      if (!map.imports) {
-        store.state.errors = [`import-map.json is missing "imports" field.`]
-        return
-      }
       createSandbox()
     } catch (e: any) {
       store.state.errors = [e as Error]
@@ -85,7 +84,7 @@ function createSandbox() {
       'allow-popups',
       'allow-same-origin',
       'allow-scripts',
-      'allow-top-navigation-by-user-activation'
+      'allow-top-navigation-by-user-activation',
     ].join(' ')
   )
 
@@ -111,6 +110,10 @@ function createSandbox() {
     .replace(
       /<!--CSS-->/,
       links.css.map((link: string) => `<link rel="stylesheet" type="text/css" href="${link}" />`).join('\n')
+    )
+    .replace(
+      /<!-- PREVIEW-OPTIONS-HEAD-HTML -->/,
+      previewOptions?.headHTML || ''
     )
 
   sandbox.srcdoc = sandboxSrc
@@ -168,7 +171,7 @@ function createSandbox() {
     },
     on_console_group_collapsed: (action: any) => {
       // group_logs(action.label, true);
-    }
+    },
   })
 
   sandbox.addEventListener('load', () => {
@@ -186,8 +189,10 @@ async function updatePreview() {
 
   let isSSR = props.ssr
   if (store.vueVersion) {
-    const [_, minor, patch] = store.vueVersion.split('.')
-    if (parseInt(minor, 10) < 2 || parseInt(patch, 10) < 27) {
+    const [major, minor, patch] = store.vueVersion
+      .split('.')
+      .map((v) => parseInt(v, 10))
+    if (major === 3 && (minor < 2 || (minor === 2 && patch < 27))) {
       alert(
         `The selected version of Vue (${store.vueVersion}) does not support in-browser SSR.` +
           ` Rendering in client mode instead.`
@@ -213,14 +218,18 @@ async function updatePreview() {
          const AppComponent = __modules__["${mainFile}"].default
          AppComponent.name = 'Repl'
          const app = _createApp(AppComponent)
-         app.config.unwrapInjectedRef = true
+         if (!app.config.hasOwnProperty('unwrapInjectedRef')) {
+           app.config.unwrapInjectedRef = true
+         }
          app.config.warnHandler = () => {}
          window.__ssr_promise__ = _renderToString(app).then(html => {
-           document.body.innerHTML = '<div id="app">' + html + '</div>'
+           document.body.innerHTML = '<div id="app">' + html + '</div>' + \`${
+             previewOptions?.bodyHTML || ''
+           }\`
          }).catch(err => {
            console.error("SSR Error", err)
          })
-        `
+        `,
       ])
     }
 
@@ -233,11 +242,18 @@ async function updatePreview() {
     )
 
     const codeToEval = [
-      `window.__modules__ = {}\nwindow.__css__ = ''\n` +
-        `if (window.__app__) window.__app__.unmount()\n` +
-        (isSSR ? `` : `document.body.innerHTML = '<div id="app"></div>'`),
+      `window.__modules__ = {};window.__css__ = [];` +
+        `if (window.__app__) window.__app__.unmount();` +
+        (isSSR
+          ? ``
+          : `document.body.innerHTML = '<div id="app"></div>' + \`${
+              previewOptions?.bodyHTML || ''
+            }\``),
       ...modules,
-      `document.getElementById('__sfc-styles').innerHTML = window.__css__`
+      `setTimeout(()=> {
+        document.querySelectorAll('style[css]').forEach(el => el.remove())
+        document.head.insertAdjacentHTML('beforeend', window.__css__.map(s => \`<style css>\${s}</style>\`).join('\\n'))
+      }, 1)`,
     ]
 
     // if main file is a vue file, mount it.
@@ -246,12 +262,16 @@ async function updatePreview() {
         `import { ${
           isSSR ? `createSSRApp` : `createApp`
         } as _createApp } from "vue"
+        ${previewOptions?.customCode?.importCode || ''}
         const _mount = () => {
           const AppComponent = __modules__["${mainFile}"].default
           AppComponent.name = 'Repl'
           const app = window.__app__ = _createApp(AppComponent)
-          app.config.unwrapInjectedRef = true
+          if (!app.config.hasOwnProperty('unwrapInjectedRef')) {
+            app.config.unwrapInjectedRef = true
+          }
           app.config.errorHandler = e => console.error(e)
+          ${previewOptions?.customCode?.useCode || ''}
           app.mount('#app')
         }
         if (window.__ssr_promise__) {
@@ -265,9 +285,19 @@ async function updatePreview() {
     // eval code in sandbox
     await proxy.eval(codeToEval)
   } catch (e: any) {
+    console.error(e)
     runtimeError.value = (e as Error).message
   }
 }
+
+/**
+ * Reload the preview iframe
+ */
+function reload() {
+  sandbox.contentWindow?.location.reload()
+}
+
+defineExpose({ reload })
 </script>
 
 <template>

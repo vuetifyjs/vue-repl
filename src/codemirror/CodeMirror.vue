@@ -3,6 +3,7 @@
 </template>
 
 <script setup lang="ts">
+import type { ModeSpec, ModeSpecOptions } from 'codemirror'
 import { ref, onMounted, watchEffect, inject } from 'vue'
 import prettier from 'prettier/standalone'
 import parserBabel from 'prettier/parser-babel'
@@ -12,7 +13,7 @@ import { debounce } from '../utils'
 import CodeMirror from './codemirror'
 
 export interface Props {
-  mode?: string
+  mode?: string | ModeSpec<ModeSpecOptions>
   value?: string
   readonly?: boolean
   extension?: string
@@ -21,7 +22,7 @@ export interface Props {
 const props = withDefaults(defineProps<Props>(), {
   mode: 'htmlmixed',
   value: '',
-  readonly: false
+  readonly: false,
 })
 
 const emit = defineEmits<(e: 'change', value: string) => void>()

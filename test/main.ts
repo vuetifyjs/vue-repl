@@ -2,12 +2,15 @@ import { createApp, h, watchEffect } from 'vue'
 import { createVuetify } from 'vuetify'
 import 'vuetify/styles'
 import { Repl, ReplStore } from '../src'
+import MonacoEditor from '../src/editor/MonacoEditor.vue'
+// import CodeMirrorEditor from '../src/editor/CodeMirrorEditor.vue'
+import { EditorComponentType } from '../src/editor/types'
 ;(window as any).process = { env: {} }
 
 const App = {
   setup() {
     const query = new URLSearchParams(location.search)
-    const store = new ReplStore({
+    const store = ((window as any).store = new ReplStore({
       serializedState: location.hash.slice(1),
       showOutput: query.has('so'),
       outputMode: query.get('om') || 'preview',
@@ -16,8 +19,10 @@ const App = {
         : `${location.origin}/src/vue-dev-proxy`,
       defaultVueServerRendererURL: import.meta.env.PROD
         ? undefined
-        : `${location.origin}/src/vue-server-renderer-dev-proxy`
-    })
+        : `${location.origin}/src/vue-server-renderer-dev-proxy`,
+    }))
+
+    console.log(store)
 
     watchEffect(() => history.replaceState({}, '', store.serialize()))
 
@@ -39,17 +44,19 @@ const App = {
     return () =>
       h(Repl, {
         store,
+        theme: 'dark',
+        editor: MonacoEditor as any as EditorComponentType,
         // layout: 'vertical',
         ssr: true,
         sfcOptions: {
           script: {
             // inlineTemplate: false
-          }
-        }
+          },
+        },
         // showCompileOutput: false,
         // showImportMap: false
       })
-  }
+  },
 }
 
 const app = createApp(App)
