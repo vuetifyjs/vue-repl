@@ -77,7 +77,7 @@
     "emmet-monaco-es": "^5.3.0",
     "fflate": "^0.8.0",
     "hash-sum": "^2.0.0",
-    "monaco-editor-core": "^0.40.0",
+    "monaco-editor-core": "^0.43.0",
     "monaco-editor-textmate": "^4.0.0",
     "monaco-textmate": "^3.0.1",
     "monaco-volar": "^0.4.0",

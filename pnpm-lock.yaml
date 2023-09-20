@@ -66,8 +66,8 @@ devDependencies:
     specifier: ^2.0.0
     version: 2.0.0
   monaco-editor-core:
-    specifier: ^0.40.0
-    version: 0.40.0
+    specifier: ^0.43.0
+    version: 0.43.0
   monaco-editor-textmate:
     specifier: ^4.0.0
     version: 4.0.0(monaco-editor@0.43.0)(monaco-textmate@3.0.1)
@@ -655,7 +655,7 @@ packages:
       '@vue/shared': 3.3.4
       estree-walker: 2.0.2
       magic-string: 0.30.0
-      postcss: 8.4.24
+      postcss: 8.4.27
       source-map-js: 1.0.2
     dev: true
 
@@ -862,7 +862,7 @@ packages:
       cac: 6.7.14
       fast-glob: 3.2.12
       prompts: 2.4.2
-      semver: 7.5.3
+      semver: 7.5.4
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -957,7 +957,7 @@ packages:
     dev: true
 
   /concat-map@0.0.1:
-    resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
+    resolution: {integrity: sha1-2Klr13/Wjfd5OnMDajug1UBdR3s=}
     dev: true
 
   /cross-spawn@7.0.3:
@@ -1454,8 +1454,8 @@ packages:
       ufo: 1.1.2
     dev: true
 
-  /monaco-editor-core@0.40.0:
-    resolution: {integrity: sha512-aII7dekftrLB7hvctv1NoQPKSp0zJ1jqO8zJeC/fuFeIUThdBkkMA9KRHNdr3pSIhB2+EDuVrkwFkaUKLWYFWA==}
+  /monaco-editor-core@0.43.0:
+    resolution: {integrity: sha512-u+JeEanDWs9gc2+dfV/nVyerpc4r8uzoCqrUd9s1iKLAzoD0myMsWjkZaPufZd8HcGhCxRVsS7w30bSa2GVWmA==}
     dev: true
 
   /monaco-editor-textmate@4.0.0(monaco-editor@0.43.0)(monaco-textmate@3.0.1):
@@ -1623,15 +1623,6 @@ packages:
       pathe: 1.1.1
     dev: true
 
-  /postcss@8.4.24:
-    resolution: {integrity: sha512-M0RzbcI0sO/XJNucsGjvWU9ERWxb/ytp1w6dKtxTKgixdtQDq4rmx/g8W1hnaheq9jgwL/oyEdH5Bc4WwJKMqg==}
-    engines: {node: ^10 || ^12 || >=14}
-    dependencies:
-      nanoid: 3.3.6
-      picocolors: 1.0.0
-      source-map-js: 1.0.2
-    dev: true
-
   /postcss@8.4.27:
     resolution: {integrity: sha512-gY/ACJtJPSmUFPDCHtX78+01fHa64FaU4zaaWfuh1MhGJISufJAH4cun6k/8fwsHYeK4UQmENQK+tRLCFJE8JQ==}
     engines: {node: ^10 || ^12 || >=14}
@@ -1755,14 +1746,6 @@ packages:
     hasBin: true
     dev: true
 
-  /semver@7.5.3:
-    resolution: {integrity: sha512-QBlUtyVk/5EeHbi7X0fw6liDZc7BBmEaSYn01fMU1OUYbf6GPsbTtd8WmnqbI20SeycoHSeiybkE/q1Q+qlThQ==}
-    engines: {node: '>=10'}
-    hasBin: true
-    dependencies:
-      lru-cache: 6.0.0
-    dev: true
-
   /semver@7.5.4:
     resolution: {integrity: sha512-1bCSESV6Pv+i21Hvpxp3Dx+pSD8lIPt8uVjRrxAUt/nbswYc+tK6Y2btiULjd4+fnq15PX+nqQDC7Oft7WkwcA==}
     engines: {node: '>=10'}
@@ -1868,7 +1851,7 @@ packages:
     dev: true
 
   /token-stream@1.0.0:
-    resolution: {integrity: sha1-zCAOqyYT9BZtJ/+a/HylbUnfbrQ=}
+    resolution: {integrity: sha512-VSsyNPPW74RpHwR8Fc21uubwHY7wMDeJLys2IX5zJNih+OnAnaifKHo+1LHT7DAdloQ7apeaaWg8l7qnf/TnEg==}
     dev: true
 
   /ts-interface-checker@0.1.13:
@@ -2158,7 +2141,7 @@ packages:
     dependencies:
       '@vue/language-core': 1.8.6(typescript@5.1.6)
       '@vue/typescript': 1.8.6(typescript@5.1.6)
-      semver: 7.5.3
+      semver: 7.5.4
       typescript: 5.1.6
     dev: true
 

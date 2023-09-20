@@ -17,7 +17,7 @@ export function initMonaco(store: Store) {
   if (initted) return
   loadMonacoEnv(store)
   loadWasm()
-  emmetHTML(monaco, ['vue', 'html'])
+  emmetHTML(monaco as any, ['vue', 'html'])
 
   watchEffect(() => {
     // create a model for each file in the store

@@ -86,11 +86,6 @@ function doneNameFile() {
   }
 }
 
-function editFileName(file: string) {
-  pendingFilename.value = stripSrcPrefix(file)
-  pending.value = file
-}
-
 const fileSel = ref(null)
 
 const activeFile = computed({

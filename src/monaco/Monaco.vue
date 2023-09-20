@@ -158,7 +158,7 @@ onMounted(async () => {
       css: 'css',
       js: 'babel',
       ts: 'babel',
-    }[extension.value] || props.mode
+    }[extension.value!] || props.mode
 
     const options = {
       parser,
