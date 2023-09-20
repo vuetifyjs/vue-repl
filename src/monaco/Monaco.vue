@@ -16,6 +16,10 @@ import { getOrCreateModel } from './utils'
 import { loadGrammars, loadTheme } from 'monaco-volar'
 import { Store } from '../store'
 import type { PreviewMode } from '../editor/types'
+import parserBabel from 'prettier/parser-babel'
+import parserHtml from 'prettier/parser-html'
+import parserPostcss from 'prettier/parser-postcss'
+import prettier from 'prettier/standalone'
 
 const props = withDefaults(
   defineProps<{
@@ -41,6 +45,7 @@ const store = inject<Store>('store')!
 initMonaco(store)
 
 const lang = computed(() => (props.mode === 'css' ? 'css' : 'javascript'))
+const extension = computed(() => props.filename.split('.').at(-1))
 
 const replTheme = inject<Ref<'dark' | 'light'>>('theme')!
 onMounted(async () => {
@@ -144,6 +149,31 @@ onMounted(async () => {
 
   editorInstance.onDidChangeModelContent(() => {
     emit('change', editorInstance.getValue())
+  })
+
+  editorInstance.onDidBlurEditorWidget(() => {
+    const parser = {
+      vue: 'html',
+      html: 'html',
+      css: 'css',
+      js: 'babel',
+      ts: 'babel',
+    }[extension.value] || props.mode
+
+    const options = {
+      parser,
+      plugins: [parserBabel, parserHtml, parserPostcss],
+      semi: false,
+      singleQuote: true,
+      arrowParens: 'avoid' as const,
+    }
+
+    let code = editorInstance.getValue()
+    try {
+      code = prettier.format(code, options)
+    } catch (err) {}
+
+    emit('change', code)
   })
 
   // update theme
