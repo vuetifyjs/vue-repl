@@ -3,11 +3,8 @@ const visible = defineModel<boolean>()
 </script>
 
 <template>
-  <div class="wrapper" @click="visible = !visible">
-    <span>Show Error</span>
-    <div class="toggle" :class="[{ active: modelValue }]">
-      <div class="indicator" />
-    </div>
+  <div class="wrapper" @click.self="visible = !visible">
+    <v-switch v-model="visible" label="Show errors" color="primary" inset hide-details density="compact"></v-switch>
   </div>
 </template>
 
@@ -15,44 +12,17 @@ const visible = defineModel<boolean>()
 .wrapper {
   position: absolute;
   bottom: 8px;
-  right: 15px;
+  right: 24px;
   z-index: 11;
   display: flex;
   align-items: center;
   background-color: var(--bg);
   color: var(--text-light);
   cursor: pointer;
-  padding: 4px 8px;
-  border-radius: 2px;
+  padding: 4px 12px;
+  border-radius: 16px;
   user-select: none;
-}
-.toggle {
-  display: inline-block;
-  margin-left: 4px;
-  width: 32px;
-  height: 18px;
-  border-radius: 12px;
-  position: relative;
-  background-color: var(--border);
-}
-
-.indicator {
-  font-size: 12px;
-  background-color: var(--text-light);
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  transition: transform ease-in-out 0.2s;
-  position: absolute;
-  left: 2px;
-  top: 2px;
-  color: var(--bg);
-  text-align: center;
-}
-
-.active .indicator {
-  background-color: var(--color-branding);
-  transform: translateX(14px);
-  color: white;
+  transform: scale(0.85);
+  transform-origin: right;
 }
 </style>
