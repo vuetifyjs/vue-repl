@@ -1,6 +1,6 @@
 {
   "name": "@vuetify/vue-repl",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Vue component for editing Vue components",
   "packageManager": "pnpm@8.6.10",
   "type": "module",
