@@ -158,6 +158,7 @@ onMounted(async () => {
       css: 'css',
       js: 'babel',
       ts: 'babel',
+      json: 'json',
     }[extension.value!] || props.mode
 
     const options = {
