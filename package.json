@@ -74,6 +74,7 @@
     "bumpp": "^9.1.1",
     "codemirror": "^5.65.14",
     "emmet": "^2.4.4",
+    "emmet-monaco-es": "^5.3.0",
     "fflate": "^0.8.0",
     "hash-sum": "^2.0.0",
     "monaco-editor-core": "^0.40.0",

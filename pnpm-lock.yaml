@@ -1,5 +1,9 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 devDependencies:
   '@babel/types':
     specifier: ^7.22.5
@@ -52,6 +56,9 @@ devDependencies:
   emmet:
     specifier: ^2.4.4
     version: 2.4.4
+  emmet-monaco-es:
+    specifier: ^5.3.0
+    version: 5.3.0(monaco-editor@0.43.0)
   fflate:
     specifier: ^0.8.0
     version: 0.8.0
@@ -993,6 +1000,15 @@ packages:
   /dotenv@16.3.1:
     resolution: {integrity: sha512-IPzF4w4/Rd94bA9imS68tZBaYyBWSCE47V1RGuMrB94iyTOIEwRmVL2x/4An+6mETpLrKJ5hQkB8W4kFAadeIQ==}
     engines: {node: '>=12'}
+    dev: true
+
+  /emmet-monaco-es@5.3.0(monaco-editor@0.43.0):
+    resolution: {integrity: sha512-+Somf9sB9Smzfl2FV9E19/DA5osHq488dv8KaGavozkv2fo69Y2rY0EoL4vWQk5FpMBc0YfdtiRsuw48Sdxs5g==}
+    peerDependencies:
+      monaco-editor: '>=0.22.0'
+    dependencies:
+      emmet: 2.4.4
+      monaco-editor: 0.43.0
     dev: true
 
   /emmet@2.4.4:
@@ -2211,7 +2227,3 @@ packages:
     optionalDependencies:
       commander: 9.5.0
     dev: true
-
-settings:
-  autoInstallPeers: true
-  excludeLinksFromLockfile: false
