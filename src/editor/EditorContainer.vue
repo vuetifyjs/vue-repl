@@ -16,8 +16,8 @@ const props = defineProps<{
 const store = inject('store') as Store
 const showMessage = ref(getItem())
 
-const onChange = debounce((code: string) => {
-  store.state.activeFile.code = code
+const onChange = debounce((code: string, filename: string) => {
+  store.state.files[filename].code = code
 }, 250)
 
 function setItem() {
@@ -38,7 +38,7 @@ watch(showMessage, () => {
   <FileSelector />
   <div class="editor-container">
     <props.editorComponent
-      @change="onChange"
+      @change="onChange($event, store.state.activeFile.filename)"
       :value="store.state.activeFile.code"
       :filename="store.state.activeFile.filename"
     />

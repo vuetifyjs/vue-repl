@@ -173,7 +173,9 @@ onMounted(async () => {
       code = prettier.format(code, options)
     } catch (err) {}
 
-    emit('change', code)
+    if (code !== props.value) {
+      emit('change', code)
+    }
   })
 
   // update theme
