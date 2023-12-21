@@ -13,7 +13,6 @@ import {
 import * as monaco from 'monaco-editor-core'
 import { initMonaco } from './env'
 import { getOrCreateModel } from './utils'
-import { loadGrammars, loadTheme } from 'monaco-volar'
 import { Store } from '../store'
 import type { PreviewMode } from '../editor/types'
 import parserBabel from 'prettier/parser-babel'
@@ -49,7 +48,7 @@ const extension = computed(() => props.filename.split('.').at(-1))
 
 const replTheme = inject<Ref<'dark' | 'light'>>('theme')!
 onMounted(async () => {
-  const theme = await loadTheme(monaco.editor)
+  const theme = await import('./highlight').then(r => r.registerHighlighter())
   ready.value = true
   await nextTick()
 
@@ -72,7 +71,6 @@ onMounted(async () => {
     inlineSuggest: {
       enabled: false,
     },
-    'semanticHighlighting.enabled': true,
     fixedOverflowWidgets: true,
   })
   editor.value = editorInstance
@@ -140,8 +138,6 @@ onMounted(async () => {
       { immediate: true }
     )
   }
-
-  await loadGrammars(monaco, editorInstance)
 
   editorInstance.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
     // ignore save event

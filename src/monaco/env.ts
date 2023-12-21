@@ -4,8 +4,6 @@ import * as monaco from 'monaco-editor-core'
 import { editor, languages, Uri } from 'monaco-editor-core'
 import editorWorker from 'monaco-editor-core/esm/vs/editor/editor.worker?worker'
 import { emmetHTML } from 'emmet-monaco-es'
-import * as onigasm from 'onigasm'
-import onigasmWasm from 'onigasm/lib/onigasm.wasm?url'
 import { watchEffect } from 'vue'
 import { Store } from '../store'
 import { getOrCreateModel } from './utils'
@@ -16,7 +14,6 @@ let initted = false
 export function initMonaco(store: Store) {
   if (initted) return
   loadMonacoEnv(store)
-  loadWasm()
   emmetHTML(monaco as any, ['vue', 'html'])
 
   watchEffect(() => {
@@ -63,10 +60,6 @@ export function initMonaco(store: Store) {
   })
 
   initted = true
-}
-
-export function loadWasm() {
-  return onigasm.loadWASM(onigasmWasm)
 }
 
 export class WorkerHost {
