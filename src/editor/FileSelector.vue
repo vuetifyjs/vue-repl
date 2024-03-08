@@ -1,6 +1,54 @@
+<template>
+  <v-tabs
+    v-model="activeFile"
+    class="file-selector"
+    :class="{ 'has-import-map': showImportMap }"
+    ref="fileSel"
+    color="primary"
+    bg-color="background"
+    density="comfortable"
+    show-arrows
+  >
+    <v-tab
+      v-for="(file, i) in files"
+      :value="file"
+      class="file"
+      size="small"
+    >
+      <span>{{ stripSrcPrefix(file) }}</span>
+      <v-icon v-if="i > 0" @click.stop="store.deleteFile(file)" icon="$close" class="ms-2 remove" />
+    </v-tab>
+    <v-tab v-if="pending" class="file pending" size="small">
+      <input
+        v-model="pendingFilename"
+        spellcheck="false"
+        @blur="doneNameFile"
+        @keyup.enter="doneNameFile"
+        @keyup.esc="cancelNameFile"
+        @vue:mounted="focus"
+      />
+    </v-tab>
+    <v-btn variant="text" height="100%" @click="startAddFile">
+      <v-icon :icon="`svg:${mdiPlus}`" />
+    </v-btn>
+
+    <v-tab v-if="showTsConfig" class="file import-map" size="small" :value="tsconfigFile">
+      tsconfig.json
+    </v-tab>
+
+    <v-tab v-if="showImportMap" class="file" size="small" :value="importMapFile">
+      Import Map
+    </v-tab>
+    <v-tab class="file" size="small" :value="linksFile">
+      Links
+    </v-tab>
+  </v-tabs>
+</template>
+
 <script setup lang="ts">
 import { Store, importMapFile, tsconfigFile, stripSrcPrefix } from '../store'
 import { computed, inject, ref, VNode, Ref } from 'vue'
+import { mdiPlus } from '@mdi/js'
 
 const store = inject('store') as Store
 
@@ -93,53 +141,6 @@ const activeFile = computed({
   set: val => { if (!pending.value) store.setActive(val) }
 })
 </script>
-
-<template>
-  <v-tabs
-    v-model="activeFile"
-    class="file-selector"
-    :class="{ 'has-import-map': showImportMap }"
-    ref="fileSel"
-    color="primary"
-    bg-color="background"
-    density="comfortable"
-    show-arrows
-  >
-    <v-tab
-      v-for="(file, i) in files"
-      :value="file"
-      class="file"
-      size="small"
-    >
-      <span>{{ stripSrcPrefix(file) }}</span>
-      <v-icon v-if="i > 0" @click.stop="store.deleteFile(file)" icon="mdi-close" class="ms-2 remove" />
-    </v-tab>
-    <v-tab v-if="pending" class="file pending" size="small">
-      <input
-        v-model="pendingFilename"
-        spellcheck="false"
-        @blur="doneNameFile"
-        @keyup.enter="doneNameFile"
-        @keyup.esc="cancelNameFile"
-        @vnodeMounted="focus"
-      />
-    </v-tab>
-    <v-btn variant="text" height="100%" @click="startAddFile">
-      <v-icon icon="mdi-plus" />
-    </v-btn>
-
-    <v-tab v-if="showTsConfig" class="file import-map" size="small" :value="tsconfigFile">
-      tsconfig.json
-    </v-tab>
-
-    <v-tab v-if="showImportMap" class="file" size="small" :value="importMapFile">
-      Import Map
-    </v-tab>
-    <v-tab class="file" size="small" :value="linksFile">
-      Links
-    </v-tab>
-  </v-tabs>
-</template>
 
 <style scoped>
 .remove {
