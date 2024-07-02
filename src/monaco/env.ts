@@ -1,4 +1,3 @@
-import { jsDelivrUriBase } from '@volar/cdn'
 import * as volar from '@volar/monaco'
 import * as monaco from 'monaco-editor-core'
 import { editor, languages, Uri } from 'monaco-editor-core'
@@ -10,6 +9,7 @@ import { getOrCreateModel } from './utils'
 import type { CreateData } from './vue.worker'
 import vueWorker from './vue.worker?worker'
 import * as languageConfigs from './language-configs'
+import type { LanguageService } from '@vue/language-service'
 
 let initted = false
 export function initMonaco(store: Store) {
@@ -33,7 +33,8 @@ export function initMonaco(store: Store) {
     for (const model of editor.getModels()) {
       const uri = model.uri.toString()
       if (store.state.files[uri.substring('file:///'.length)]) continue
-      if (uri.startsWith(jsDelivrUriBase + '/')) continue
+
+      if (uri.startsWith('file:///node_modules')) continue
       if (uri.startsWith('inmemory://')) continue
 
       model.dispose()
@@ -79,7 +80,7 @@ export async function reloadLanguageTools(store: Store) {
     }
   }
 
-  const worker = editor.createWebWorker<any>({
+  const worker = editor.createWebWorker<LanguageService>({
     moduleId: 'vs/language/vue/vueWorker',
     label: 'vue',
     host: new WorkerHost(),
@@ -90,23 +91,22 @@ export async function reloadLanguageTools(store: Store) {
   })
   const languageId = ['vue', 'javascript', 'typescript']
   const getSyncUris = () =>
-    Object.keys(store.state.files).map((filename) =>
-      Uri.parse(`file:///${filename}`)
-    )
-  const { dispose: disposeMarkers } = volar.editor.activateMarkers(
+    Object.keys(store.state.files).map((filename) => Uri.parse(`file:///${filename}`))
+
+  const { dispose: disposeMarkers } = volar.activateMarkers(
     worker,
     languageId,
     'vue',
     getSyncUris,
     editor
   )
-  const { dispose: disposeAutoInsertion } = volar.editor.activateAutoInsertion(
+  const { dispose: disposeAutoInsertion } = volar.activateAutoInsertion(
     worker,
     languageId,
     getSyncUris,
     editor
   )
-  const { dispose: disposeProvides } = await volar.languages.registerProvides(
+  const { dispose: disposeProvides } = await volar.registerProviders(
     worker,
     languageId,
     getSyncUris,
@@ -164,7 +164,7 @@ export function loadMonacoEnv(store: Store) {
   // Support for go to definition
   editor.registerEditorOpener({
     openCodeEditor(_, resource) {
-      if (resource.toString().startsWith(jsDelivrUriBase + '/')) {
+      if (resource.toString().startsWith('file:///node_modules')) {
         return true
       }
 
