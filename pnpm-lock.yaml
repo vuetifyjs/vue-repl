@@ -45,11 +45,11 @@ importers:
         specifier: ^5.0.4
         version: 5.0.4(vite@5.1.5(@types/node@20.11.25)(sass@1.71.1))(vue@3.4.21(typescript@5.4.2))
       '@volar/jsdelivr':
-        specifier: ~2.4.0-alpha.8
-        version: 2.4.0-alpha.8
+        specifier: 2.4.0-alpha.12
+        version: 2.4.0-alpha.12
       '@volar/monaco':
-        specifier: ~2.4.0-alpha.8
-        version: 2.4.12
+        specifier: 2.4.0-alpha.12
+        version: 2.4.0-alpha.12
       '@vue/language-service':
         specifier: 2.0.24
         version: 2.0.24(typescript@5.4.2)
@@ -528,8 +528,11 @@ packages:
       vite: ^5.0.0
       vue: ^3.2.25
 
-  '@volar/jsdelivr@2.4.0-alpha.8':
-    resolution: {integrity: sha512-/QF977lNhP12bX97tFw3/tYxgUw3ndTZSE4vLRRa1/fBjVGtVKChBWpCoGwk5QCfMveRaxRVPLdP8MBpg9Riyg==}
+  '@volar/jsdelivr@2.4.0-alpha.12':
+    resolution: {integrity: sha512-GJuuvAdK9DO2oGLT+v/ZardVaTXQc+gNPlfdq4zbtYoc4ViPcrbfEM3weLpg4cm/Cj6iCSoXq/m+m48z417eoA==}
+
+  '@volar/language-core@2.4.0-alpha.12':
+    resolution: {integrity: sha512-Dj9qTifcGGgzFLfMbU5dCo13kHyNuEyvPJhtWDnoVBBmgwW3GMwFmgWnNxBhjf63m5x0gux1okaxX2CLN7qSww==}
 
   '@volar/language-core@2.4.0-alpha.8':
     resolution: {integrity: sha512-iHRSw4BT4upJCHRDaT/lLejx2/A9Od1aW02HyQjZcNziXSLKHiAem/WmU6cUh75JTUfwAA/V+mApqMgVR+WTog==}
@@ -537,20 +540,26 @@ packages:
   '@volar/language-core@2.4.12':
     resolution: {integrity: sha512-RLrFdXEaQBWfSnYGVxvR2WrO6Bub0unkdHYIdC31HzIEqATIuuhRRzYu76iGPZ6OtA4Au1SnW0ZwIqPP217YhA==}
 
+  '@volar/language-service@2.4.0-alpha.12':
+    resolution: {integrity: sha512-R6MQ/qOlKqBvc7LmdV+K/f64uuAa5zJpyYHpKLzuR0y4iKvWKblxwzggumII6XLBGFwkgMoW3v2RIIz1WXxTqg==}
+
   '@volar/language-service@2.4.0-alpha.8':
     resolution: {integrity: sha512-dB3pqhKz8cSjCcR77Hhn1THFGsqxlbHm+q77zNPimdzF4UXrUS7iZDieQRV2NL/awHDyK7QnBtSJE3BsZquD3Q==}
 
-  '@volar/language-service@2.4.12':
-    resolution: {integrity: sha512-nifOPGYYPnCmxja6/ML/Gl2EgFkUdw4gLbYqbh8FjqX3gSpXSZl/0ebqORjKo1KW56YWHWRZd1jFutEtCiRYhA==}
+  '@volar/monaco@2.4.0-alpha.12':
+    resolution: {integrity: sha512-O26Tn6qxQKVWBXCzcfedTolrU42GfjGGMjEkG7alm2211+9XtcqGTpkLS2XFFJI7RId+3kLmVDhEfCzKDx1oZg==}
 
-  '@volar/monaco@2.4.12':
-    resolution: {integrity: sha512-M2YAHk8wc6ComwqfKftzbBgwpw2dx+9KaQDEIIH9iVRh/EGySU/0oZim5rBIezpgfPa0CaK5jYuWC12fU2zARA==}
+  '@volar/source-map@2.4.0-alpha.12':
+    resolution: {integrity: sha512-LXATFSj4D7T9sEm7FFj6iBgHjKjrdhAgRPcechVKiNCMQdr3r3GVkkeu8aM+1peaMH3LsCqoDxVZEmh2r7CHiw==}
 
   '@volar/source-map@2.4.0-alpha.8':
     resolution: {integrity: sha512-ocaN3Ac30KzxceXqgGGLoO7atrLk9tR8+6F6fPZM+g5RrCgyHRogzpM3GGqQ1/gg+MKF+5SZAs0LhbaS3QEvqA==}
 
   '@volar/source-map@2.4.12':
     resolution: {integrity: sha512-bUFIKvn2U0AWojOaqf63ER0N/iHIBYZPpNGogfLPQ68F5Eet6FnLlyho7BS0y2HJ1jFhSif7AcuTx1TqsCzRzw==}
+
+  '@volar/typescript@2.4.0-alpha.12':
+    resolution: {integrity: sha512-mLg+OQauMTv/+08a7WBWJo1sev/wc8t2is0zhBZIlFU+j5mG89FM4+4089c2p/zoUFZ400Q/VNg2BPfhpZ8wSA==}
 
   '@volar/typescript@2.4.12':
     resolution: {integrity: sha512-HJB73OTJDgPc80K30wxi3if4fSsZZAOScbj2fcicMuOPoOkcf9NNAINb33o+DzhBdF9xTKC1gnPmIRDous5S0g==}
@@ -1107,8 +1116,8 @@ packages:
   monaco-editor@0.43.0:
     resolution: {integrity: sha512-cnoqwQi/9fml2Szamv1XbSJieGJ1Dc8tENVMD26Kcfl7xGQWp7OBKMjlwKVGYFJ3/AXJjSOGvcqK7Ry/j9BM1Q==}
 
-  monaco-languageserver-types@0.4.0:
-    resolution: {integrity: sha512-QQ3BZiU5LYkJElGncSNb5AKoJ/LCs6YBMCJMAz9EA7v+JaOdn3kx2cXpPTcZfKA5AEsR0vc97sAw+5mdNhVBmw==}
+  monaco-languageserver-types@0.3.4:
+    resolution: {integrity: sha512-d58sP5yNhjs8uG1ESXs0hFnuX2YfdMhiGeWhdgTUZyG9aaWgyI4dDwrK1khf1mPF2u9Sljv42sfYqPFZnqYMYg==}
 
   monaco-types@0.1.0:
     resolution: {integrity: sha512-aWK7SN9hAqNYi0WosPoMjenMeXJjwCxDibOqWffyQ/qXdzB/86xshGQobRferfmNz7BSNQ8GB0MD0oby9/5fTQ==}
@@ -1996,7 +2005,11 @@ snapshots:
       vite: 5.1.5(@types/node@20.11.25)(sass@1.71.1)
       vue: 3.4.21(typescript@5.4.2)
 
-  '@volar/jsdelivr@2.4.0-alpha.8': {}
+  '@volar/jsdelivr@2.4.0-alpha.12': {}
+
+  '@volar/language-core@2.4.0-alpha.12':
+    dependencies:
+      '@volar/source-map': 2.4.0-alpha.12
 
   '@volar/language-core@2.4.0-alpha.8':
     dependencies:
@@ -2006,6 +2019,13 @@ snapshots:
     dependencies:
       '@volar/source-map': 2.4.12
 
+  '@volar/language-service@2.4.0-alpha.12':
+    dependencies:
+      '@volar/language-core': 2.4.0-alpha.12
+      vscode-languageserver-protocol: 3.17.5
+      vscode-languageserver-textdocument: 1.0.12
+      vscode-uri: 3.1.0
+
   '@volar/language-service@2.4.0-alpha.8':
     dependencies:
       '@volar/language-core': 2.4.0-alpha.8
@@ -2013,24 +2033,25 @@ snapshots:
       vscode-languageserver-textdocument: 1.0.11
       vscode-uri: 3.0.8
 
-  '@volar/language-service@2.4.12':
+  '@volar/monaco@2.4.0-alpha.12':
     dependencies:
-      '@volar/language-core': 2.4.12
-      vscode-languageserver-protocol: 3.17.5
-      vscode-languageserver-textdocument: 1.0.11
-      vscode-uri: 3.0.8
-
-  '@volar/monaco@2.4.12':
-    dependencies:
-      '@volar/language-service': 2.4.12
-      '@volar/typescript': 2.4.12
-      monaco-languageserver-types: 0.4.0
+      '@volar/language-service': 2.4.0-alpha.12
+      '@volar/typescript': 2.4.0-alpha.12
+      monaco-languageserver-types: 0.3.4
       monaco-types: 0.1.0
-      vscode-uri: 3.0.8
+      vscode-uri: 3.1.0
+
+  '@volar/source-map@2.4.0-alpha.12': {}
 
   '@volar/source-map@2.4.0-alpha.8': {}
 
   '@volar/source-map@2.4.12': {}
+
+  '@volar/typescript@2.4.0-alpha.12':
+    dependencies:
+      '@volar/language-core': 2.4.0-alpha.12
+      path-browserify: 1.0.1
+      vscode-uri: 3.1.0
 
   '@volar/typescript@2.4.12':
     dependencies:
@@ -2668,11 +2689,11 @@ snapshots:
 
   monaco-editor@0.43.0: {}
 
-  monaco-languageserver-types@0.4.0:
+  monaco-languageserver-types@0.3.4:
     dependencies:
       monaco-types: 0.1.0
       vscode-languageserver-protocol: 3.17.5
-      vscode-uri: 3.0.8
+      vscode-uri: 3.1.0
 
   monaco-types@0.1.0: {}
 
