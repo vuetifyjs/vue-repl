@@ -68,9 +68,9 @@
     "@types/node": "^20.11.25",
     "@types/prettier": "^2.7.3",
     "@vitejs/plugin-vue": "^5.0.4",
-    "@volar/jsdelivr": "2.4.0-alpha.12",
-    "@volar/monaco": "2.4.0-alpha.12",
-    "@vue/language-service": "2.0.24",
+    "@volar/jsdelivr": "~2.4.4",
+    "@volar/monaco": "~2.4.4",
+    "@vue/language-service": "2.1.6",
     "bumpp": "^9.4.0",
     "codemirror": "^5.65.14",
     "emmet": "^2.4.6",
@@ -90,7 +90,7 @@
     "vite-plugin-vuetify": "^2.0.2",
     "vscode-uri": "^3.0.8",
     "vue": "^3.4.21",
-    "vue-tsc": "~2.0.24",
+    "vue-tsc": "~2.1.6",
     "vuetify": "3.5.8"
   },
   "peerDependencies": {
