@@ -4,7 +4,6 @@ import {
   onBeforeUnmount,
   ref,
   shallowRef,
-  nextTick,
   inject,
   watch,
   computed,
@@ -19,6 +18,7 @@ import parserBabel from 'prettier/parser-babel'
 import parserHtml from 'prettier/parser-html'
 import parserPostcss from 'prettier/parser-postcss'
 import prettier from 'prettier/standalone'
+import { registerHighlighter } from './highlight'
 
 const props = withDefaults(
   defineProps<{
@@ -37,7 +37,6 @@ const emit = defineEmits<{
 }>()
 
 const containerRef = ref<HTMLDivElement>()
-const ready = ref(false)
 const editor = shallowRef<monaco.editor.IStandaloneCodeEditor>()
 const store = inject<Store>('store')!
 
@@ -47,10 +46,8 @@ const lang = computed(() => (props.mode === 'css' ? 'css' : 'javascript'))
 const extension = computed(() => props.filename.split('.').at(-1))
 
 const replTheme = inject<Ref<'dark' | 'light'>>('theme')!
-onMounted(async () => {
-  const theme = await import('./highlight').then(r => r.registerHighlighter())
-  ready.value = true
-  await nextTick()
+onMounted(() => {
+  const theme = registerHighlighter()
 
   if (!containerRef.value) {
     throw new Error('Cannot find containerRef')
