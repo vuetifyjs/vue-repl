@@ -74,6 +74,7 @@ onMounted(async () => {
     },
     'semanticHighlighting.enabled': true,
     fixedOverflowWidgets: true,
+    wordWrap: store.state.wordWrap ? 'on' : 'off',
   })
   editor.value = editorInstance
 
@@ -141,10 +142,23 @@ onMounted(async () => {
     )
   }
 
+  watch(
+    () => store.state.wordWrap,
+    () => {
+      editorInstance.updateOptions({
+        wordWrap: store.state.wordWrap ? 'on' : 'off',
+      })
+    }
+  )
+
   await loadGrammars(monaco, editorInstance)
 
   editorInstance.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
     // ignore save event
+  })
+
+  editorInstance.addCommand(monaco.KeyMod.Alt | monaco.KeyCode.KeyZ, () => {
+    store.state.wordWrap = !store.state.wordWrap
   })
 
   editorInstance.onDidChangeModelContent(() => {
