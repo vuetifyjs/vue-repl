@@ -67,9 +67,9 @@ pre {
 
 .msg {
   position: absolute;
-  bottom: 0;
+  bottom: 50px;
   left: 8px;
-  right: 8px;
+  right: 20px;
   z-index: 10;
   border: 2px solid transparent;
   border-radius: 6px;
@@ -105,10 +105,6 @@ pre {
   .dismiss {
     top: -9px;
     right: -9px;
-  }
-
-  .msg {
-    bottom: 50px;
   }
 }
 
