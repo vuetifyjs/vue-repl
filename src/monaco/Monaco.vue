@@ -14,9 +14,9 @@ import { initMonaco } from './env'
 import { getOrCreateModel } from './utils'
 import { Store } from '../store'
 import type { PreviewMode } from '../editor/types'
-import parserBabel from 'prettier/parser-babel'
-import parserHtml from 'prettier/parser-html'
-import parserPostcss from 'prettier/parser-postcss'
+import parserBabel from 'prettier/plugins/babel'
+import parserHtml from 'prettier/plugins/html'
+import parserPostcss from 'prettier/plugins/postcss'
 import prettier from 'prettier/standalone'
 import { registerHighlighter } from './highlight'
 
@@ -145,7 +145,7 @@ onMounted(() => {
     emit('change', editorInstance.getValue())
   })
 
-  editorInstance.onDidBlurEditorWidget(() => {
+  editorInstance.onDidBlurEditorWidget(async () => {
     const parser = {
       vue: 'html',
       html: 'html',
@@ -165,7 +165,7 @@ onMounted(() => {
 
     let code = editorInstance.getValue()
     try {
-      code = prettier.format(code, options)
+      code = await prettier.format(code, options)
     } catch (err) {}
 
     if (code !== props.value) {
