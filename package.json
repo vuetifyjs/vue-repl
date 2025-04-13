@@ -68,10 +68,10 @@
     "@types/node": "^20.11.25",
     "@types/prettier": "^2.7.3",
     "@vitejs/plugin-vue": "^5.0.4",
-    "@volar/cdn": "~1.11.1",
+    "@volar/cdn": "~1.9.2",
     "@volar/monaco": "~1.9.2",
-    "@volar/typescript": "~2.1.2",
-    "@vue/language-service": "2.0.6",
+    "@volar/typescript": "~1.9.2",
+    "@vue/language-service": "1.8.6",
     "bumpp": "^9.4.0",
     "codemirror": "^5.65.14",
     "emmet": "^2.4.6",
@@ -86,18 +86,18 @@
     "path-browserify": "^1.0.1",
     "prettier": "^3.2.5",
     "rimraf": "^5.0.5",
-    "sass": "^1.71.1",
+    "sass": "^1.86.3",
     "sucrase": "^3.35.0",
     "typescript": "^5.4.2",
     "vite": "^5.1.5",
     "vite-plugin-vuetify": "^2.0.2",
-    "vue": "^3.4.21",
+    "vue": "^3.5.13",
     "vue-tsc": "2.0.6",
-    "vuetify": "3.5.8"
+    "vuetify": "3.8.1"
   },
   "peerDependencies": {
-    "vue": "^3.3.4",
-    "vuetify": "^3.3.15"
+    "vue": "^3.5.13",
+    "vuetify": "^3.8.1"
   },
   "publishConfig": {
     "access": "public"
