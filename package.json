@@ -90,10 +90,10 @@
     "sucrase": "^3.35.0",
     "typescript": "^5.4.2",
     "vite": "^5.1.5",
-    "vite-plugin-vuetify": "^2.0.2",
+    "vite-plugin-vuetify": "^2.1.1",
     "vue": "^3.5.13",
     "vue-tsc": "2.0.6",
-    "vuetify": "3.8.1"
+    "vuetify": "3.8.2"
   },
   "peerDependencies": {
     "vue": "^3.5.13",
