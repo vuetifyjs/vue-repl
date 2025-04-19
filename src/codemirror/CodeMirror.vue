@@ -6,9 +6,9 @@
 import type { ModeSpec, ModeSpecOptions } from 'codemirror'
 import { ref, onMounted, watchEffect, inject } from 'vue'
 import prettier from 'prettier/standalone'
-import parserBabel from 'prettier/parser-babel'
-import parserHtml from 'prettier/parser-html'
-import parserPostcss from 'prettier/parser-postcss'
+import parserBabel from 'prettier/plugins/babel'
+import parserHtml from 'prettier/plugins/html'
+import parserPostcss from 'prettier/plugins/postcss'
 import { debounce } from '../utils'
 import CodeMirror from './codemirror'
 
@@ -65,7 +65,7 @@ onMounted(() => {
     emit('change', editor.getValue())
   })
 
-  editor.on('blur', () => {
+  editor.on('blur', async () => {
     const parser = props.extension === 'vue' ? 'html'
       : props.extension === 'html' ? 'html'
       : props.extension === 'css' ? 'css'
@@ -83,7 +83,7 @@ onMounted(() => {
 
     let code = editor.getValue()
     try {
-      code = prettier.format(code, options)
+      code = await prettier.format(code, options)
     } catch (err) {}
 
     emit('change', code)
