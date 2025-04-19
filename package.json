@@ -9,30 +9,30 @@
   "files": [
     "dist"
   ],
-  "types": "dist/repl.d.ts",
+  "types": "dist/vue-repl.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/repl.d.ts",
+      "types": "./dist/vue-repl.d.ts",
       "import": "./dist/vue-repl.js",
       "require": "./dist/ssr-stub.js"
     },
     "./monaco-editor": {
-      "types": "./dist/editor-types.d.ts",
+      "types": "./dist/monaco-editor.d.ts",
       "import": "./dist/monaco-editor.js",
       "require": null
     },
     "./codemirror-editor": {
-      "types": "./dist/editor-types.d.ts",
+      "types": "./dist/codemirror-editor.d.ts",
       "import": "./dist/codemirror-editor.js",
       "require": null
     },
-    "./style.css": "./dist/style.css",
-    "./dist/style.css": "./dist/style.css"
+    "./package.json": "./package.json",
+    "./style.css": "./dist/vue-repl.css",
+    "./dist/style.css": "./dist/vue-repl.css"
   },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "build-types": "vue-tsc -p tsconfig.build.json && api-extractor run -c api-extractor.json && node scripts/cleanup.js",
     "build-preview": "vite build -c vite.preview.config.ts",
     "format": "prettier --write .",
     "release": "bumpp -r",
@@ -88,16 +88,17 @@
     "rimraf": "^5.0.5",
     "sass": "^1.86.3",
     "sucrase": "^3.35.0",
-    "typescript": "^5.4.2",
-    "vite": "^5.1.5",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.2",
+    "vite-plugin-dts": "^4.5.3",
     "vite-plugin-vuetify": "^2.1.1",
     "vue": "^3.5.13",
-    "vue-tsc": "2.0.6",
+    "vue-tsc": "2.2.8",
     "vuetify": "3.8.2"
   },
   "peerDependencies": {
     "vue": "^3.5.13",
-    "vuetify": "^3.8.1"
+    "vuetify": "^3.8.2"
   },
   "publishConfig": {
     "access": "public"
