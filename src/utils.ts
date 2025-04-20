@@ -31,3 +31,11 @@ export function atou(base64: string): string {
   // https://base64.guru/developers/javascript/examples/unicode-strings
   return decodeURIComponent(escape(binary))
 }
+
+// This function compares the `lang` attribute of the `<script>` tag in .vue files
+export function isSciptLangChanged(newCode: string, oldCode: string) {
+  const newLang = newCode.match(/<script[^>]*lang="([^"]+)"[^>]*>/)?.[1]
+  const oldLang = oldCode.match(/<script[^>]*lang="([^"]+)"[^>]*>/)?.[1]
+
+  return newLang !== oldLang
+}
