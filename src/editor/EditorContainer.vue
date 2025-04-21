@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import FileSelector from './FileSelector.vue'
 import Message from '../Message.vue'
-import WrapToggle from './WrapToggle.vue'
 import { debounce } from '../utils'
 import { inject, ref, watch } from 'vue'
 import { Store } from '../store'
-import MessageToggle from './MessageToggle.vue'
 import type { EditorComponentType } from './types'
+import EditorSettings from './EditorSettings.vue'
 
 const SHOW_ERROR_KEY = 'repl_show_error'
 const TOGGLE_WRAP_KEY = 'repl_toggle_wrap'
@@ -52,8 +51,7 @@ watch(
       :filename="store.state.activeFile.filename"
     />
     <Message v-show="showMessage" :err="store.state.errors[0]" />
-    <MessageToggle v-model="showMessage" />
-    <WrapToggle v-model="store.state.wordWrap" />
+    <EditorSettings v-model:show-message="showMessage" />
   </div>
 </template>
 
