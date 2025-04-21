@@ -93,6 +93,7 @@ export interface StoreState {
   resetFlip: boolean
   /** \{ dependencyName: version \} */
   dependencyVersion?: Record<string, string>
+  wordWrap?: boolean
 }
 
 export interface SFCOptions {
