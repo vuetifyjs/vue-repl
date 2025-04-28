@@ -1,12 +1,11 @@
 <template>
-  <v-navigation-drawer v-model="drawer" :width="220">
+  <v-navigation-drawer v-model="store.state.showFileExplorer" :width="220">
     <v-list-item title="Files">
       <template v-slot:append>
         <v-icon-btn
           :icon="`svg:${mdiFilePlus}`"
           variant="tonal"
           color="primary"
-          v-tooltip="'New file'"
           size="10px"
           icon-size="24px"
           @click="startAddFile"
@@ -65,7 +64,7 @@
       <v-divider></v-divider>
       <v-list
         :selected="[activeFile]"
-        @update:selected="(v) => (activeFile = v[0])"
+        @update:selected="(v) => (activeFile = v[0] ?? activeFile)"
         density="compact"
         class="px-1"
         slim
@@ -108,7 +107,6 @@ import {
   mdiLink,
 } from '@mdi/js'
 
-const drawer = defineModel<boolean>({ default: true })
 const store = inject('store') as Store
 
 const {
