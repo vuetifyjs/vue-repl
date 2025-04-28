@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import FileSelector from './FileSelector.vue'
 import Message from '../Message.vue'
 import WrapToggle from './WrapToggle.vue'
 import { debounce } from '../utils'
@@ -44,8 +43,7 @@ watch(
 </script>
 
 <template>
-  <FileSelector />
-  <div class="editor-container">
+  <div class="h-100 overflow-hidden position-relative pt-1">
     <props.editorComponent
       @change="onChange($event, store.state.activeFile.filename)"
       :value="store.state.activeFile.code"
@@ -56,11 +54,3 @@ watch(
     <WrapToggle v-model="store.state.wordWrap" />
   </div>
 </template>
-
-<style scoped>
-.editor-container {
-  height: calc(100% - var(--header-height));
-  overflow: hidden;
-  position: relative;
-}
-</style>
