@@ -1,10 +1,11 @@
 <template>
   <div class="d-flex gap-1">
     <v-btn
-      :icon="`svg:${mdiFileMultipleOutline}`"
+      :icon="`svg:${mdiFileMultiple}`"
       :ripple="false"
       variant="plain"
       size="small"
+      min-width="46px"
       @click="store.state.showFileExplorer = !store.state.showFileExplorer"
     />
     <v-tabs
@@ -24,6 +25,15 @@
         size="small"
       >
         <span>{{ stripSrcPrefix(file) }}</span>
+        <v-icon-btn
+          v-if="recentFiles.length > 1"
+          icon="$close"
+          size="20px"
+          icon-size="15px"
+          variant="text"
+          class="ms-2"
+          @click.stop="closeFile(file)"
+        />
       </v-tab>
     </v-tabs>
   </div>
@@ -33,9 +43,10 @@
 import { inject, watch, ref, nextTick } from 'vue'
 import { Store } from '../store'
 import { useFileSelector } from '../composables/useFileSelector'
-import { mdiFileMultipleOutline } from '@mdi/js'
+import { mdiFileMultiple } from '@mdi/js'
+import { VIconBtn } from 'vuetify/labs/components'
 
-const MAX_RECENT_FILES = 5
+const MAX_RECENT_FILES = 10
 
 const store = inject('store') as Store
 
@@ -53,4 +64,13 @@ watch(activeFile, async (newVal) => {
   await nextTick()
   localActiveFile.value = activeFile.value
 })
+
+function closeFile(file: string) {
+  const index = recentFiles.value.indexOf(file)
+  if (index == -1) return
+
+  recentFiles.value.splice(index, 1)
+  if (activeFile.value === file)
+    activeFile.value = recentFiles.value[recentFiles.value.length - 1] || ''
+}
 </script>
