@@ -1,19 +1,17 @@
 <template>
   <v-navigation-drawer v-model="store.state.showFileExplorer" :width="220">
-    <v-list-item title="Files">
+    <v-list-item title="Explorer" height="43px">
       <template v-slot:append>
         <v-icon-btn
           :icon="`svg:${mdiFilePlus}`"
-          variant="tonal"
-          color="primary"
-          size="10px"
-          icon-size="24px"
+          size="20px"
+          icon-size="20px"
           @click="startAddFile"
         />
       </template>
     </v-list-item>
 
-    <v-divider></v-divider>
+    <v-divider />
 
     <v-list
       :selected="[activeFile]"
@@ -36,7 +34,7 @@
         <template v-slot:append>
           <v-icon-btn
             icon="$close"
-            size="20px"
+            size="26px"
             icon-size="20px"
             variant="text"
             @click.stop="store.deleteFile(file)"
@@ -61,10 +59,10 @@
     </v-list>
 
     <template v-slot:append>
-      <v-divider></v-divider>
+      <v-divider />
       <v-list
         :selected="[activeFile]"
-        @update:selected="(v) => (activeFile = v[0] ?? activeFile)"
+        @update:selected="activeFile = $event[0] ?? activeFile"
         density="compact"
         class="px-1"
         slim

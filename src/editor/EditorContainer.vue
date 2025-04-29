@@ -45,7 +45,7 @@ watch(
 
 <template>
   <FileSelector />
-  <div class="overflow-hidden position-relative pt-1 editor-container">
+  <div class="overflow-hidden position-relative editor-container">
     <props.editorComponent
       @change="onChange($event, store.state.activeFile.filename)"
       :value="store.state.activeFile.code"
