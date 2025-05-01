@@ -80,7 +80,6 @@
     "monaco-editor-core": "^0.52.2",
     "shiki": "^1.29.2",
     "@shikijs/monaco": "^1.29.2",
-    "path-browserify": "^1.0.1",
     "prettier": "^3.2.5",
     "rimraf": "^5.0.5",
     "sass": "^1.71.1",
