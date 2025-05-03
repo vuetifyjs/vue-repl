@@ -17,7 +17,7 @@
       class="flex-grow-1"
     >
       <v-tab
-        v-for="file in recentFiles"
+        v-for="file in validRecentFiles"
         :key="file"
         :value="file"
         @click="activeFile = file"
@@ -51,10 +51,16 @@ const MAX_RECENT_FILES = 10
 
 const store = inject('store') as Store
 const { mdAndDown } = useDisplay()
-
 const { activeFile, stripSrcPrefix } = useFileSelector()
-const recentFiles = ref([activeFile.value])
+
 const localActiveFile = ref(activeFile.value)
+const recentFiles = ref([activeFile.value])
+
+// Filters the list of recent files to include only files that still exist in the current store state
+const validRecentFiles = computed(() => {
+  const files = Object.keys(store.state.files)
+  return recentFiles.value.filter((file) => files.includes(file))
+})
 
 watch(activeFile, async (newVal) => {
   if (newVal && !recentFiles.value.includes(newVal)) {
