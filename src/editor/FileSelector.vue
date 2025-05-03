@@ -47,7 +47,7 @@
 </template>
 
 <script setup lang="ts">
-import { inject, watch, ref, nextTick } from 'vue'
+import { inject, watch, ref, nextTick, computed } from 'vue'
 import { Store } from '../store'
 import { useFileSelector } from '../composables/useFileSelector'
 import { mdiFileMultiple } from '@mdi/js'
