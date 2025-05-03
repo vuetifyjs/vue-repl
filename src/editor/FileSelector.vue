@@ -45,10 +45,12 @@ import { Store } from '../store'
 import { useFileSelector } from '../composables/useFileSelector'
 import { mdiFileMultiple } from '@mdi/js'
 import { VIconBtn } from 'vuetify/labs/components'
+import { useDisplay } from 'vuetify'
 
 const MAX_RECENT_FILES = 10
 
 const store = inject('store') as Store
+const { mdAndDown } = useDisplay()
 
 const { activeFile, stripSrcPrefix } = useFileSelector()
 const recentFiles = ref([activeFile.value])
@@ -72,5 +74,12 @@ function closeFile(file: string) {
   recentFiles.value.splice(index, 1)
   if (activeFile.value === file)
     activeFile.value = recentFiles.value[recentFiles.value.length - 1] || ''
+}
+
+if (mdAndDown.value) {
+  store.state.showFileExplorer = false
+  recentFiles.value = Object.keys(store.state.files)
+    .filter((f) => f.startsWith('src/'))
+    .slice(0, MAX_RECENT_FILES)
 }
 </script>
