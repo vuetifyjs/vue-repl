@@ -1,12 +1,13 @@
 <template>
   <div class="d-flex gap-1">
     <v-btn
+      v-if="!store.state.showFileExplorer"
       :icon="`svg:${mdiFileMultiple}`"
       :ripple="false"
       variant="plain"
       size="small"
       min-width="46px"
-      @click="store.state.showFileExplorer = !store.state.showFileExplorer"
+      @click="store.state.showFileExplorer = true"
     />
     <v-tabs
       :model-value="localActiveFile"
@@ -20,10 +21,16 @@
         v-for="file in validRecentFiles"
         :key="file"
         :value="file"
-        @click="activeFile = file"
-        class="file"
         size="small"
+        @click="activeFile = file"
       >
+        <template v-slot:prepend>
+          <v-icon
+            :icon="`svg:${getFileIcon(file)}`"
+            :color="getFileIconColor(file)"
+            size="small"
+          />
+        </template>
         <span>{{ stripSrcPrefix(file) }}</span>
         <v-icon-btn
           v-if="recentFiles.length > 1"
@@ -51,7 +58,8 @@ const MAX_RECENT_FILES = 10
 
 const store = inject('store') as Store
 const { mdAndDown } = useDisplay()
-const { activeFile, stripSrcPrefix } = useFileSelector()
+const { activeFile, stripSrcPrefix, getFileIcon, getFileIconColor } =
+  useFileSelector()
 
 const localActiveFile = ref(activeFile.value)
 const recentFiles = ref([activeFile.value])

@@ -1,13 +1,27 @@
 <template>
-  <v-navigation-drawer v-model="store.state.showFileExplorer" :width="220">
-    <v-list-item title="Explorer" height="43px">
+  <v-navigation-drawer v-model="store.state.showFileExplorer" :width="240">
+    <v-list-item height="43px">
+      <template v-slot:prepend>
+        <v-btn
+          class="px-0 rounded-md"
+          variant="flat"
+          size="small"
+          min-width="30px"
+          @click="store.state.showFileExplorer = false"
+        >
+          <IconPanelLeftClose />
+        </v-btn>
+      </template>
       <template v-slot:append>
-        <v-icon-btn
-          :icon="`svg:${mdiFilePlus}`"
-          size="20px"
-          icon-size="20px"
+        <v-btn
+          class="px-0 rounded-md"
+          variant="flat"
+          size="small"
+          min-width="30px"
           @click="startAddFile"
-        />
+        >
+          <v-icon :size="24" :icon="`svg:${mdiFilePlusOutline}`" />
+        </v-btn>
       </template>
     </v-list-item>
 
@@ -15,7 +29,7 @@
 
     <v-list
       :selected="[activeFile]"
-      class="py-1 px-1 overflow-y-scroll"
+      class="py-1 px-1 overflow-y-scroll file-list"
       density="compact"
       :style="{ 'max-height': 'calc(100% - 44px)' }"
     >
@@ -25,10 +39,16 @@
         :value="file"
         rounded
         slim
-        :prepend-icon="`svg:${mdiFileCode}`"
         @click="activeFile = file"
       >
-        <v-list-item-title :title="stripSrcPrefix(file)">
+        <template v-slot:prepend>
+          <v-icon
+            :icon="`svg:${getFileIcon(file)}`"
+            :color="getFileIconColor(file)"
+            size="small"
+          />
+        </template>
+        <v-list-item-title :title="stripSrcPrefix(file)" class="file-name">
           {{ stripSrcPrefix(file) }}
         </v-list-item-title>
         <template v-slot:append>
@@ -42,7 +62,11 @@
         </template>
       </v-list-item>
 
-      <v-list-item v-if="pending" :prepend-icon="`svg:${mdiFileCode}`" slim>
+      <v-list-item
+        v-if="pending"
+        :prepend-icon="`svg:${getFileIcon(pendingFilename)}`"
+        slim
+      >
         <v-list-item-title>
           <v-text-field
             v-model="pendingFilename"
@@ -50,6 +74,8 @@
             hide-details
             autofocus
             single-line
+            base-color="primary"
+            color="primary"
             @blur="doneNameFile"
             @keyup.enter="doneNameFile"
             @keyup.esc="cancelNameFile"
@@ -69,21 +95,25 @@
       >
         <v-list-item v-if="showTsConfig" :value="tsconfigFile" rounded>
           <template v-slot:prepend>
-            <v-icon size="small" :icon="`svg:${mdiLanguageTypescript}`" />
+            <v-icon
+              size="small"
+              :icon="`svg:${mdiLanguageTypescript}`"
+              color="info"
+            />
           </template>
           <v-list-item-title>tsconfig.json</v-list-item-title>
         </v-list-item>
 
         <v-list-item v-if="showImportMap" :value="importMapFile" rounded>
           <template v-slot:prepend>
-            <v-icon size="small" :icon="`svg:${mdiMap}`" />
+            <v-icon size="small" :icon="`svg:${mdiMap}`" color="warning" />
           </template>
           <v-list-item-title>import-map.json</v-list-item-title>
         </v-list-item>
 
         <v-list-item v-if="linksFile" :value="linksFile" rounded>
           <template v-slot:prepend>
-            <v-icon size="small" :icon="`svg:${mdiLink}`" />
+            <v-icon size="small" :icon="`svg:${mdiLink}`" color="success" />
           </template>
           <v-list-item-title>links.json</v-list-item-title>
         </v-list-item>
@@ -97,9 +127,9 @@ import type { Store } from 'src/store'
 import { inject } from 'vue'
 import { useFileSelector } from '../composables/useFileSelector'
 import { VIconBtn } from 'vuetify/labs/components'
+import IconPanelLeftClose from '../icons/IconPanelLeftClose.vue'
 import {
-  mdiFilePlus,
-  mdiFileCode,
+  mdiFilePlusOutline,
   mdiLanguageTypescript,
   mdiMap,
   mdiLink,
@@ -121,5 +151,7 @@ const {
   showTsConfig,
   importMapFile,
   linksFile,
+  getFileIcon,
+  getFileIconColor,
 } = useFileSelector()
 </script>

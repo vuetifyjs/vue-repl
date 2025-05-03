@@ -1,5 +1,13 @@
 import { Store, importMapFile, tsconfigFile, stripSrcPrefix } from '../store'
 import { computed, inject, ref, VNode, Ref } from 'vue'
+import {
+  mdiVuejs,
+  mdiLanguageJavascript,
+  mdiLanguageTypescript,
+  mdiLanguageCss3,
+  mdiCodeJson,
+  mdiFileOutline,
+} from '@mdi/js'
 
 export function useFileSelector() {
   const store = inject('store') as Store
@@ -99,6 +107,44 @@ export function useFileSelector() {
     },
   })
 
+  const getFileIcon = (filename: string) => {
+    const ext = filename.split('.').pop()?.toLowerCase()
+
+    switch (ext) {
+      case 'vue':
+        return mdiVuejs
+      case 'js':
+        return mdiLanguageJavascript
+      case 'ts':
+        return mdiLanguageTypescript
+      case 'css':
+        return mdiLanguageCss3
+      case 'json':
+        return mdiCodeJson
+      default:
+        return mdiFileOutline
+    }
+  }
+
+  const getFileIconColor = (filename: string) => {
+    const ext = filename.split('.').pop()?.toLowerCase()
+
+    switch (ext) {
+      case 'vue':
+        return 'success'
+      case 'js':
+        return 'warning'
+      case 'ts':
+        return 'info'
+      case 'css':
+        return 'blue'
+      case 'json':
+        return 'amber'
+      default:
+        return 'grey'
+    }
+  }
+
   return {
     files,
     pending,
@@ -115,5 +161,7 @@ export function useFileSelector() {
     tsconfigFile,
     importMapFile,
     stripSrcPrefix,
+    getFileIcon,
+    getFileIconColor,
   }
 }
