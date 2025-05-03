@@ -63,10 +63,14 @@ const validRecentFiles = computed(() => {
 })
 
 watch(activeFile, async (newVal) => {
-  if (newVal && !recentFiles.value.includes(newVal)) {
-    if (recentFiles.value.length >= MAX_RECENT_FILES)
-      recentFiles.value.splice(0, 1, newVal)
-    else recentFiles.value.push(newVal)
+  if (!newVal) return
+
+  const index = recentFiles.value.indexOf(newVal)
+  if (index === -1) {
+    if (recentFiles.value.length >= MAX_RECENT_FILES) {
+      recentFiles.value.shift()
+    }
+    recentFiles.value.push(newVal)
   }
 
   await nextTick()
