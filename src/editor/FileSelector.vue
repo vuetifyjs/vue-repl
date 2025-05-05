@@ -97,7 +97,7 @@ function closeFile(file: string) {
 if (mdAndDown.value) {
   store.state.showFileExplorer = false
   recentFiles.value = Object.keys(store.state.files)
-    .filter((f) => f.startsWith('src/'))
+    .filter((f) => f.startsWith('src/') && !store.state.files[f]?.hidden)
     .slice(0, MAX_RECENT_FILES)
 }
 </script>
