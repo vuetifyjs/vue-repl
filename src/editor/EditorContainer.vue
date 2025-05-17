@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import FileSelector from './FileSelector.vue'
 import Message from '../Message.vue'
 import WrapToggle from './WrapToggle.vue'
 import { debounce } from '../utils'
@@ -7,6 +6,7 @@ import { inject, ref, watch } from 'vue'
 import { Store } from '../store'
 import MessageToggle from './MessageToggle.vue'
 import type { EditorComponentType } from './types'
+import FileSelector from './FileSelector.vue'
 
 const SHOW_ERROR_KEY = 'repl_show_error'
 const TOGGLE_WRAP_KEY = 'repl_toggle_wrap'
@@ -45,7 +45,7 @@ watch(
 
 <template>
   <FileSelector />
-  <div class="editor-container">
+  <div class="overflow-hidden position-relative editor-container">
     <props.editorComponent
       @change="onChange($event, store.state.activeFile.filename)"
       :value="store.state.activeFile.code"
@@ -59,8 +59,6 @@ watch(
 
 <style scoped>
 .editor-container {
-  height: calc(100% - var(--header-height));
-  overflow: hidden;
-  position: relative;
+  height: calc(100% - 44px);
 }
 </style>

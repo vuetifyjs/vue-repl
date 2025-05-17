@@ -57,7 +57,7 @@
   },
   "homepage": "https://github.com/vuetifyjs/vue-repl#readme",
   "devDependencies": {
-    "@babel/types": "^7.24.0",
+    "@babel/types": "^7.27.1",
     "@emmetio/abbreviation": "^2.3.3",
     "@emmetio/codemirror-plugin": "^1.2.4",
     "@emmetio/css-abbreviation": "^2.1.8",

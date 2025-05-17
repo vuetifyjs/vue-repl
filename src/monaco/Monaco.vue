@@ -161,19 +161,24 @@ onMounted(async () => {
     store.state.wordWrap = !store.state.wordWrap
   })
 
+  editorInstance.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyB, () => {
+    store.state.showFileExplorer = !store.state.showFileExplorer
+  })
+
   editorInstance.onDidChangeModelContent(() => {
     emit('change', editorInstance.getValue())
   })
 
   editorInstance.onDidBlurEditorWidget(async () => {
-    const parser = {
-      vue: 'html',
-      html: 'html',
-      css: 'css',
-      js: 'babel',
-      ts: 'babel',
-      json: 'json',
-    }[extension.value!] || props.mode
+    const parser =
+      {
+        vue: 'html',
+        html: 'html',
+        css: 'css',
+        js: 'babel',
+        ts: 'babel',
+        json: 'json',
+      }[extension.value!] || props.mode
 
     const options = {
       parser,
