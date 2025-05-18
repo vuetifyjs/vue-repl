@@ -5,6 +5,7 @@ import { Store, ReplStore, SFCOptions } from './store'
 import { provide, ref, toRef } from 'vue'
 import type { EditorComponentType } from './editor/types'
 import EditorContainer from './editor/EditorContainer.vue'
+import FileExplorer from './editor/FileExplorer.vue'
 
 export interface Props {
   theme?: 'dark' | 'light'
@@ -90,19 +91,25 @@ defineExpose({ reload })
 
 <template>
   <v-theme-provider with-background class="vue-repl">
-    <SplitPane :layout="layout">
-      <template #left>
-        <EditorContainer :editorComponent="editor" />
-      </template>
-      <template #right>
-        <Output
-          ref="outputRef"
-          :editorComponent="editor"
-          :showCompileOutput="props.showCompileOutput"
-          :ssr="!!props.ssr"
-        />
-      </template>
-    </SplitPane>
+    <v-layout class="h-100">
+      <FileExplorer />
+
+      <v-main class="h-100">
+        <SplitPane :layout="layout">
+          <template #left>
+            <EditorContainer :editorComponent="editor" />
+          </template>
+          <template #right>
+            <Output
+              ref="outputRef"
+              :editorComponent="editor"
+              :showCompileOutput="props.showCompileOutput"
+              :ssr="!!props.ssr"
+            />
+          </template>
+        </SplitPane>
+      </v-main>
+    </v-layout>
   </v-theme-provider>
 </template>
 

@@ -93,6 +93,8 @@ export interface StoreState {
   resetFlip: boolean
   /** \{ dependencyName: version \} */
   dependencyVersion?: Record<string, string>
+  wordWrap?: boolean
+  showFileExplorer: boolean
 }
 
 export interface SFCOptions {
@@ -178,6 +180,7 @@ export class ReplStore implements Store {
       typescriptVersion: 'latest',
       typescriptLocale: undefined,
       resetFlip: true,
+      showFileExplorer: true,
     })
 
     this.initImportMap()
@@ -200,9 +203,8 @@ export class ReplStore implements Store {
       () => this.state.activeFile.code,
       (newCode, oldCode) => {
         if (this.state.activeFile.language !== 'vue') return
-        if (hasScriptLangChanged(newCode, oldCode))
-          this.reloadLanguageTools?.()
-      },
+        if (hasScriptLangChanged(newCode, oldCode)) this.reloadLanguageTools?.()
+      }
     )
 
     watch(
@@ -403,9 +405,13 @@ export class ReplStore implements Store {
     if (!links) {
       this.state.files[linksFile] = new File(
         linksFile,
-        JSON.stringify({
-          css: []
-        }, null, 2)
+        JSON.stringify(
+          {
+            css: [],
+          },
+          null,
+          2
+        )
       )
     }
   }
@@ -472,7 +478,7 @@ export class ReplStore implements Store {
       return JSON.parse(this.state.files[linksFile].code)
     } catch (e) {
       this.state.errors = [
-        `Syntax error in links.json: ${(e as Error).message}`
+        `Syntax error in links.json: ${(e as Error).message}`,
       ]
     }
   }
@@ -486,7 +492,7 @@ function setFile(
   // prefix user files with src/
   // for cleaner Volar path completion when using Monaco editor
   const normalized =
-    ![importMapFile, tsconfigFile, linksFile].includes(filename) && 
+    ![importMapFile, tsconfigFile, linksFile].includes(filename) &&
     !filename.startsWith('src/')
       ? `src/${filename}`
       : filename

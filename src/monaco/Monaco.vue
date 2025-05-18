@@ -69,6 +69,7 @@ onMounted(() => {
       enabled: false,
     },
     fixedOverflowWidgets: true,
+    wordWrap: store.state.wordWrap ? 'on' : 'off',
   })
   editor.value = editorInstance
 
@@ -137,8 +138,25 @@ onMounted(() => {
     )
   }
 
+  watch(
+    () => store.state.wordWrap,
+    () => {
+      editorInstance.updateOptions({
+        wordWrap: store.state.wordWrap ? 'on' : 'off',
+      })
+    }
+  )
+
   editorInstance.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
     // ignore save event
+  })
+
+  editorInstance.addCommand(monaco.KeyMod.Alt | monaco.KeyCode.KeyZ, () => {
+    store.state.wordWrap = !store.state.wordWrap
+  })
+
+  editorInstance.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyB, () => {
+    store.state.showFileExplorer = !store.state.showFileExplorer
   })
 
   editorInstance.onDidChangeModelContent(() => {
@@ -146,14 +164,15 @@ onMounted(() => {
   })
 
   editorInstance.onDidBlurEditorWidget(async () => {
-    const parser = {
-      vue: 'html',
-      html: 'html',
-      css: 'css',
-      js: 'babel',
-      ts: 'babel',
-      json: 'json',
-    }[extension.value!] || props.mode
+    const parser =
+      {
+        vue: 'html',
+        html: 'html',
+        css: 'css',
+        js: 'babel',
+        ts: 'babel',
+        json: 'json',
+      }[extension.value!] || props.mode
 
     const options = {
       parser,

@@ -1,6 +1,6 @@
-import vue from '@vitejs/plugin-vue'
 import vuetify from 'vite-plugin-vuetify'
 import { Plugin, mergeConfig } from 'vite'
+import dts from 'vite-plugin-dts'
 import base from './vite.preview.config'
 
 const genStub: Plugin = {
@@ -17,6 +17,9 @@ const genStub: Plugin = {
 
 export default mergeConfig(base, {
   plugins: [
+    dts({
+      rollupTypes: true,
+    }),
     vuetify({
       styles: { configFile: 'src/settings.scss' },
     }),
