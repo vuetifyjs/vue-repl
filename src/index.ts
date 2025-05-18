@@ -5,3 +5,5 @@ export { compileFile } from './transform'
 export type { Props as ReplProps } from './Repl.vue'
 export type { Store, StoreOptions, SFCOptions, StoreState } from './store'
 export type { OutputModes } from './output/types'
+export { version as languageToolsVersion } from '@vue/language-service/package.json'
+
