@@ -1,6 +1,6 @@
 {
   "name": "@vuetify/vue-repl",
-  "version": "2.1.1",
+  "version": "2.2.0",
   "description": "Vue component for editing Vue components",
   "packageManager": "pnpm@8.6.10",
   "type": "module",
@@ -36,7 +36,7 @@
     "build-preview": "vite build -c vite.preview.config.ts",
     "format": "prettier --write .",
     "release": "bumpp -r",
-    "prepublishOnly": "npm run build && npm run build-types"
+    "prepublishOnly": "npm run build"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm exec lint-staged --concurrent false"
