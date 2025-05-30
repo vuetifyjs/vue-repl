@@ -1,7 +1,7 @@
 import { version, reactive, watchEffect, watch } from 'vue'
 import * as defaultCompiler from 'vue/compiler-sfc'
 import { compileFile } from './transform'
-import { utoa, atou } from './utils'
+import { utoa, atou, hasScriptLangChanged } from './utils'
 import {
   SFCScriptCompileOptions,
   SFCAsyncStyleCompileOptions,
@@ -194,6 +194,17 @@ export class ReplStore implements Store {
       compileFile(this, this.state.activeFile).then(
         (errs) => (this.state.errors = errs)
       )
+    )
+
+    // Temporary workaround for https://github.com/vuejs/repl/issues/321
+    // which is related to https://github.com/microsoft/TypeScript/issues/57631
+    // TODO: remove this when the issue is fixed
+    watch(
+      () => this.state.activeFile.code,
+      (newCode, oldCode) => {
+        if (this.state.activeFile.language !== 'vue') return
+        if (hasScriptLangChanged(newCode, oldCode)) this.reloadLanguageTools?.()
+      }
     )
 
     watch(

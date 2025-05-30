@@ -28,7 +28,6 @@ export default mergeConfig(base, {
   optimizeDeps: {
     // avoid late discovered deps
     include: [
-      'path-browserify',
       'onigasm',
       'typescript',
       '@volar/cdn',

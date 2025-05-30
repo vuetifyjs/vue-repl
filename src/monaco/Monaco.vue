@@ -4,7 +4,6 @@ import {
   onBeforeUnmount,
   ref,
   shallowRef,
-  nextTick,
   inject,
   watch,
   computed,
@@ -13,13 +12,13 @@ import {
 import * as monaco from 'monaco-editor-core'
 import { initMonaco } from './env'
 import { getOrCreateModel } from './utils'
-import { loadGrammars, loadTheme } from 'monaco-volar'
 import { Store } from '../store'
 import type { PreviewMode } from '../editor/types'
 import parserBabel from 'prettier/plugins/babel'
 import parserHtml from 'prettier/plugins/html'
 import parserPostcss from 'prettier/plugins/postcss'
 import prettier from 'prettier/standalone'
+import { registerHighlighter } from './highlight'
 
 const props = withDefaults(
   defineProps<{
@@ -38,7 +37,6 @@ const emit = defineEmits<{
 }>()
 
 const containerRef = ref<HTMLDivElement>()
-const ready = ref(false)
 const editor = shallowRef<monaco.editor.IStandaloneCodeEditor>()
 const store = inject<Store>('store')!
 
@@ -48,10 +46,8 @@ const lang = computed(() => (props.mode === 'css' ? 'css' : 'javascript'))
 const extension = computed(() => props.filename.split('.').at(-1))
 
 const replTheme = inject<Ref<'dark' | 'light'>>('theme')!
-onMounted(async () => {
-  const theme = await loadTheme(monaco.editor)
-  ready.value = true
-  await nextTick()
+onMounted(() => {
+  const theme = registerHighlighter()
 
   if (!containerRef.value) {
     throw new Error('Cannot find containerRef')
@@ -72,7 +68,6 @@ onMounted(async () => {
     inlineSuggest: {
       enabled: false,
     },
-    'semanticHighlighting.enabled': true,
     fixedOverflowWidgets: true,
     wordWrap: store.state.wordWrap ? 'on' : 'off',
   })
@@ -80,6 +75,7 @@ onMounted(async () => {
 
   // Support for semantic highlighting
   const t = (editorInstance as any)._themeService._theme
+  t.semanticHighlighting = true
   t.getTokenStyleMetadata = (
     type: string,
     modifiers: string[],
@@ -94,7 +90,7 @@ onMounted(async () => {
         return { foreground: 11 }
       case 'variable':
       case 'property':
-        return { foreground: _readonly ? 21 : 9 }
+        return { foreground: _readonly ? 19 : 9 }
       default:
         return { foreground: 0 }
     }
@@ -150,8 +146,6 @@ onMounted(async () => {
       })
     }
   )
-
-  await loadGrammars(monaco, editorInstance)
 
   editorInstance.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
     // ignore save event

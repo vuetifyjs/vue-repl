@@ -4,7 +4,14 @@ const visible = defineModel<boolean>()
 
 <template>
   <div class="wrapper" @click.self="visible = !visible">
-    <v-switch v-model="visible" label="Word wrap" color="primary" inset hide-details density="compact" />
+    <v-switch
+      v-model="visible"
+      label="Word wrap"
+      color="primary"
+      inset
+      hide-details
+      density="compact"
+    />
   </div>
 </template>
 
