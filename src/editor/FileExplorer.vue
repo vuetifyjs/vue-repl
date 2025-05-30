@@ -1,27 +1,25 @@
 <template>
   <v-navigation-drawer v-model="store.state.showFileExplorer" :width="240">
-    <v-list-item height="43px">
+    <v-list-item class="px-2">
       <template v-slot:prepend>
         <v-btn
-          class="px-0 rounded-md"
           variant="flat"
           size="small"
-          min-width="30px"
+          :icon="`svg:${mdiDockLeft}`"
           @click="store.state.showFileExplorer = false"
-        >
-          <IconPanelLeftClose />
-        </v-btn>
+        ></v-btn>
       </template>
+
       <template v-slot:append>
         <v-btn
-          class="px-0 rounded-md"
-          variant="flat"
+          variant="text"
           size="small"
-          min-width="30px"
+          :append-icon="`svg:${mdiFilePlusOutline}`"
+          text="Add File"
+          border
+          slim
           @click="startAddFile"
-        >
-          <v-icon :size="24" :icon="`svg:${mdiFilePlusOutline}`" />
-        </v-btn>
+        ></v-btn>
       </template>
     </v-list-item>
 
@@ -29,15 +27,16 @@
 
     <v-list
       :selected="[activeFile]"
-      class="py-1 px-1 overflow-y-scroll file-list"
+      class="py-1 px-1 overflow-y-auto d-flex flex-column ga-1"
       density="compact"
-      :style="{ 'max-height': 'calc(100% - 44px)' }"
+      max-height="calc(100% - 44px)"
     >
       <v-list-item
         v-for="file in files"
         :key="file"
         :value="file"
         rounded
+        :title="stripSrcPrefix(file)"
         slim
         @click="activeFile = file"
       >
@@ -48,44 +47,38 @@
             size="small"
           />
         </template>
-        <v-list-item-title :title="stripSrcPrefix(file)" class="file-name">
-          {{ stripSrcPrefix(file) }}
-        </v-list-item-title>
+
         <template v-slot:append>
           <v-icon-btn
             icon="$close"
-            size="26px"
-            icon-size="20px"
-            variant="text"
+            size="26"
+            icon-size="14"
+            variant="plain"
             @click.stop="store.deleteFile(file)"
           />
         </template>
       </v-list-item>
 
-      <v-list-item
+      <v-text-field
         v-if="pending"
-        :prepend-icon="`svg:${getFileIcon(pendingFilename)}`"
-        slim
-      >
-        <v-list-item-title>
-          <v-text-field
-            v-model="pendingFilename"
-            density="compact"
-            hide-details
-            autofocus
-            single-line
-            base-color="primary"
-            color="primary"
-            @blur="doneNameFile"
-            @keyup.enter="doneNameFile"
-            @keyup.esc="cancelNameFile"
-          />
-        </v-list-item-title>
-      </v-list-item>
+        v-model="pendingFilename"
+        density="compact"
+        hide-details
+        autofocus
+        single-line
+        :prepend-inner-icon="`svg:${getFileIcon(pendingFilename)}`"
+        base-color="primary"
+        color="primary"
+        variant="outlined"
+        @blur="doneNameFile"
+        @keyup.enter="doneNameFile"
+        @keyup.esc="cancelNameFile"
+      />
     </v-list>
 
     <template v-slot:append>
       <v-divider />
+
       <v-list
         :selected="[activeFile]"
         @update:selected="activeFile = $event[0] ?? activeFile"
@@ -127,12 +120,12 @@ import type { Store } from 'src/store'
 import { inject } from 'vue'
 import { useFileSelector } from '../composables/useFileSelector'
 import { VIconBtn } from 'vuetify/labs/components'
-import IconPanelLeftClose from '../icons/IconPanelLeftClose.vue'
 import {
   mdiFilePlusOutline,
   mdiLanguageTypescript,
   mdiMap,
   mdiLink,
+  mdiDockLeft,
 } from '@mdi/js'
 
 const store = inject('store') as Store
