@@ -19,6 +19,7 @@ export interface Props {
   sfcOptions?: SFCOptions
   layout?: 'horizontal' | 'vertical'
   ssr?: boolean
+  readonly?: boolean
   previewOptions?: {
     headHTML?: string
     bodyHTML?: string
@@ -38,6 +39,7 @@ const props = withDefaults(defineProps<Props>(), {
   showTsConfig: true,
   clearConsole: true,
   ssr: false,
+  readonly: false,
   previewOptions: () => ({
     headHTML: '',
     bodyHTML: '',
@@ -79,6 +81,7 @@ provide('tsconfig', toRef(props, 'showTsConfig'))
 provide('clear-console', toRef(props, 'clearConsole'))
 provide('preview-options', props.previewOptions)
 provide('theme', toRef(props, 'theme'))
+provide('readonly', toRef(props, 'readonly'))
 /**
  * Reload the preview iframe
  */
@@ -128,9 +131,8 @@ defineExpose({ reload })
   margin: 0;
   overflow: hidden;
   font-size: 13px;
-  font-family:
-    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
-    Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   background-color: var(--bg-soft);
 }
 </style>

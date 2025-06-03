@@ -16,10 +16,12 @@ const props = defineProps<{
 }>()
 
 const store = inject('store') as Store
+const readonly = inject('readonly', ref(false))
 const showMessage = ref((getItem(SHOW_ERROR_KEY) ?? 'true') === 'true')
 store.state.wordWrap = (getItem(TOGGLE_WRAP_KEY) ?? 'false') === 'true'
 
 const onChange = debounce((code: string, filename: string) => {
+  if (readonly.value) return
   store.state.files[filename].code = code
 }, 250)
 
@@ -50,6 +52,7 @@ watch(
       @change="onChange($event, store.state.activeFile.filename)"
       :value="store.state.activeFile.code"
       :filename="store.state.activeFile.filename"
+      :readonly="readonly"
     />
     <Message v-show="showMessage" :err="store.state.errors[0]" />
     <MessageToggle v-model="showMessage" />
