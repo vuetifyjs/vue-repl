@@ -113,6 +113,13 @@ onMounted(async () => {
     monaco.editor.setModelLanguage(editorInstance.getModel()!, lang)
   )
 
+  watch(
+    () => props.readonly,
+    (readonly) => {
+      editorInstance.updateOptions({ readOnly: readonly })
+    }
+  )
+
   if (!props.readonly) {
     watch(
       () => props.filename,
