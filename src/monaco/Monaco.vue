@@ -9,6 +9,7 @@ import {
   watch,
   computed,
   type Ref,
+  watchEffect,
 } from 'vue'
 import * as monaco from 'monaco-editor-core'
 import { initMonaco } from './env'
@@ -44,7 +45,6 @@ const store = inject<Store>('store')!
 
 initMonaco(store)
 
-const lang = computed(() => (props.mode === 'css' ? 'css' : 'javascript'))
 const extension = computed(() => props.filename.split('.').at(-1))
 
 const replTheme = inject<Ref<'dark' | 'light'>>('theme')!
@@ -58,9 +58,6 @@ onMounted(async () => {
   }
 
   const editorInstance = monaco.editor.create(containerRef.value, {
-    ...(props.readonly
-      ? { value: props.value, language: lang.value }
-      : { model: null }),
     fontSize: 13,
     theme: replTheme.value === 'light' ? theme.light : theme.dark,
     readOnly: props.readonly,
@@ -100,62 +97,42 @@ onMounted(async () => {
     }
   }
 
+  watchEffect(() => {
+    if (editorInstance.getValue() !== props.value)
+      editorInstance.setValue(props.value || '')
+
+    editorInstance.updateOptions({
+      readOnly: props.readonly,
+      wordWrap: store.state.wordWrap ? 'on' : 'off',
+      theme: replTheme.value === 'light' ? theme.light : theme.dark,
+    })
+  })
+
   watch(
-    () => props.value,
-    (value) => {
-      if (editorInstance.getValue() === value) return
-      editorInstance.setValue(value || '')
+    () => props.filename,
+    (_, oldFilename) => {
+      if (!editorInstance) return
+      const file = store.state.files[props.filename]
+      if (!file) return null
+      const model = getOrCreateModel(
+        monaco.Uri.parse(`file:///${props.filename}`),
+        file.language,
+        file.code
+      )
+
+      const oldFile = oldFilename ? store.state.files[oldFilename] : null
+      if (oldFile) {
+        oldFile.editorViewState = editorInstance.saveViewState()
+      }
+
+      editorInstance.setModel(model)
+
+      if (file.editorViewState) {
+        editorInstance.restoreViewState(file.editorViewState)
+        editorInstance.focus()
+      }
     },
     { immediate: true }
-  )
-
-  watch(lang, (lang) =>
-    monaco.editor.setModelLanguage(editorInstance.getModel()!, lang)
-  )
-
-  watch(
-    () => props.readonly,
-    (readonly) => {
-      editorInstance.updateOptions({ readOnly: readonly })
-    }
-  )
-
-  if (!props.readonly) {
-    watch(
-      () => props.filename,
-      (_, oldFilename) => {
-        if (!editorInstance) return
-        const file = store.state.files[props.filename]
-        if (!file) return null
-        const model = getOrCreateModel(
-          monaco.Uri.parse(`file:///${props.filename}`),
-          file.language,
-          file.code
-        )
-
-        const oldFile = oldFilename ? store.state.files[oldFilename] : null
-        if (oldFile) {
-          oldFile.editorViewState = editorInstance.saveViewState()
-        }
-
-        editorInstance.setModel(model)
-
-        if (file.editorViewState) {
-          editorInstance.restoreViewState(file.editorViewState)
-          editorInstance.focus()
-        }
-      },
-      { immediate: true }
-    )
-  }
-
-  watch(
-    () => store.state.wordWrap,
-    () => {
-      editorInstance.updateOptions({
-        wordWrap: store.state.wordWrap ? 'on' : 'off',
-      })
-    }
   )
 
   await loadGrammars(monaco, editorInstance)
@@ -203,13 +180,6 @@ onMounted(async () => {
     if (code !== props.value) {
       emit('change', code)
     }
-  })
-
-  // update theme
-  watch(replTheme, (n) => {
-    editorInstance.updateOptions({
-      theme: n === 'light' ? theme.light : theme.dark,
-    })
   })
 })
 
