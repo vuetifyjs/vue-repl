@@ -33,7 +33,7 @@
         </template>
         <span>{{ stripSrcPrefix(file) }}</span>
         <v-icon-btn
-          v-if="recentFiles.length > 1"
+          v-if="recentFiles.length > 1 && !readonly"
           icon="$close"
           size="20px"
           icon-size="15px"
@@ -57,6 +57,7 @@ import { useDisplay } from 'vuetify'
 const MAX_RECENT_FILES = 10
 
 const store = inject('store') as Store
+const readonly = inject('readonly', ref(false))
 const { mdAndDown } = useDisplay()
 const { activeFile, stripSrcPrefix, getFileIcon, getFileIconColor } =
   useFileSelector()
