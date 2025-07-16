@@ -3,9 +3,10 @@ import SplitPane from './SplitPane.vue'
 import Output from './output/Output.vue'
 import { Store, ReplStore, SFCOptions } from './store'
 import { provide, ref, toRef } from 'vue'
-import type { EditorComponentType } from './editor/types'
+import type { EditorComponentType, EditorOptions } from './editor/types'
 import EditorContainer from './editor/EditorContainer.vue'
 import FileExplorer from './editor/FileExplorer.vue'
+import { deepMerge } from './utils'
 
 export interface Props {
   theme?: 'dark' | 'light'
@@ -27,6 +28,7 @@ export interface Props {
       useCode?: string
     }
   }
+  editorOptions?: EditorOptions
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -46,6 +48,19 @@ const props = withDefaults(defineProps<Props>(), {
       useCode: '',
     },
   }),
+})
+
+const defaultEditorOptions = ref<EditorOptions>({
+  showErrors: true,
+  monaco: {
+    wordWrap: 'off',
+    minimap: { enabled: false },
+    inlineSuggest: { enabled: false },
+    padding: { top: 0, bottom: 0 },
+  },
+  patch: (options) => {
+    deepMerge(defaultEditorOptions.value, options)
+  },
 })
 
 if (!props.editor) {
@@ -79,6 +94,7 @@ provide('tsconfig', toRef(props, 'showTsConfig'))
 provide('clear-console', toRef(props, 'clearConsole'))
 provide('preview-options', props.previewOptions)
 provide('theme', toRef(props, 'theme'))
+provide('editor-options', props.editorOptions ?? defaultEditorOptions.value)
 /**
  * Reload the preview iframe
  */
@@ -128,9 +144,8 @@ defineExpose({ reload })
   margin: 0;
   overflow: hidden;
   font-size: 13px;
-  font-family:
-    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
-    Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   background-color: var(--bg-soft);
 }
 </style>

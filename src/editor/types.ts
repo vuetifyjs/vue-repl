@@ -1,4 +1,5 @@
 import { type FunctionalComponent } from 'vue'
+import type { editor } from 'monaco-editor-core'
 
 export type PreviewMode = 'js' | 'css' | 'ssr'
 
@@ -18,6 +19,19 @@ export type EditorComponentType = FunctionalComponent<
   { change: (code: string) => void }
 > & {
   editorType: 'monaco' | 'codemirror'
+}
+
+export interface MonacoOptions {
+  wordWrap?: editor.IEditorOptions['wordWrap']
+  minimap?: editor.IEditorMinimapOptions
+  inlineSuggest?: editor.IInlineSuggestOptions
+  padding?: editor.IEditorOptions['padding']
+}
+
+export interface EditorOptions {
+  monaco?: MonacoOptions
+  showErrors?: boolean
+  patch: (options: Partial<EditorOptions>) => void
 }
 
 declare const EditorComponent: EditorComponentType

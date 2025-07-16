@@ -15,7 +15,7 @@ import { initMonaco } from './env'
 import { getOrCreateModel } from './utils'
 import { loadGrammars, loadTheme } from 'monaco-volar'
 import { Store } from '../store'
-import type { PreviewMode } from '../editor/types'
+import type { EditorOptions, PreviewMode } from '../editor/types'
 import parserBabel from 'prettier/plugins/babel'
 import parserHtml from 'prettier/plugins/html'
 import parserPostcss from 'prettier/plugins/postcss'
@@ -41,6 +41,7 @@ const containerRef = ref<HTMLDivElement>()
 const ready = ref(false)
 const editor = shallowRef<monaco.editor.IStandaloneCodeEditor>()
 const store = inject<Store>('store')!
+const editorOptions = inject<EditorOptions>('editor-options')
 
 initMonaco(store)
 
@@ -66,15 +67,12 @@ onMounted(async () => {
     readOnly: props.readonly,
     automaticLayout: true,
     scrollBeyondLastLine: false,
-    minimap: {
-      enabled: false,
-    },
-    inlineSuggest: {
-      enabled: false,
-    },
+    minimap: editorOptions?.monaco?.minimap,
+    inlineSuggest: editorOptions?.monaco?.inlineSuggest,
     'semanticHighlighting.enabled': true,
     fixedOverflowWidgets: true,
-    wordWrap: store.state.wordWrap ? 'on' : 'off',
+    wordWrap: editorOptions?.monaco?.wordWrap,
+    padding: editorOptions?.monaco?.padding,
   })
   editor.value = editorInstance
 
@@ -143,10 +141,10 @@ onMounted(async () => {
   }
 
   watch(
-    () => store.state.wordWrap,
+    () => editorOptions?.monaco?.wordWrap,
     () => {
       editorInstance.updateOptions({
-        wordWrap: store.state.wordWrap ? 'on' : 'off',
+        wordWrap: editorOptions?.monaco?.wordWrap,
       })
     }
   )
@@ -158,7 +156,11 @@ onMounted(async () => {
   })
 
   editorInstance.addCommand(monaco.KeyMod.Alt | monaco.KeyCode.KeyZ, () => {
-    store.state.wordWrap = !store.state.wordWrap
+    editorOptions?.patch?.({
+      monaco: {
+        wordWrap: editorOptions?.monaco?.wordWrap === 'on' ? 'off' : 'on',
+      },
+    })
   })
 
   editorInstance.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyB, () => {
