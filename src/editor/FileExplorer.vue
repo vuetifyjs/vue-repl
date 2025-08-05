@@ -12,6 +12,7 @@
 
       <template v-slot:append>
         <v-btn
+          v-if="!readonly"
           variant="text"
           size="small"
           :append-icon="`svg:${mdiFilePlusOutline}`"
@@ -50,6 +51,7 @@
 
         <template v-slot:append>
           <v-icon-btn
+            v-if="!readonly"
             icon="$close"
             size="26"
             icon-size="14"
@@ -60,7 +62,7 @@
       </v-list-item>
 
       <v-text-field
-        v-if="pending"
+        v-if="pending && !readonly"
         v-model="pendingFilename"
         density="compact"
         hide-details
@@ -117,7 +119,7 @@
 
 <script setup lang="ts">
 import type { Store } from 'src/store'
-import { inject } from 'vue'
+import { inject, ref } from 'vue'
 import { useFileSelector } from '../composables/useFileSelector'
 import { VIconBtn } from 'vuetify/labs/components'
 import {
@@ -129,6 +131,7 @@ import {
 } from '@mdi/js'
 
 const store = inject('store') as Store
+const readonly = inject('readonly', ref(false))
 
 const {
   activeFile,
