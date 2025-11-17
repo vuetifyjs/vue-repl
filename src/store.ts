@@ -170,6 +170,12 @@ export class ReplStore implements Store {
     if (!files[mainFile]) {
       mainFile = Object.keys(files)[0]
     }
+
+    const savedShowFileExplorer = localStorage.getItem('showFileExplorer')
+    const showFileExplorer = savedShowFileExplorer !== null
+      ? savedShowFileExplorer === 'true'
+      : true
+
     this.state = reactive({
       mainFile,
       files,
@@ -180,7 +186,7 @@ export class ReplStore implements Store {
       typescriptVersion: 'latest',
       typescriptLocale: undefined,
       resetFlip: true,
-      showFileExplorer: true,
+      showFileExplorer,
     })
 
     this.initImportMap()
@@ -194,6 +200,13 @@ export class ReplStore implements Store {
       compileFile(this, this.state.activeFile).then(
         (errs) => (this.state.errors = errs)
       )
+    )
+
+    watch(
+      () => this.state.showFileExplorer,
+      (value) => {
+        localStorage.setItem('showFileExplorer', String(value))
+      }
     )
 
     watch(
