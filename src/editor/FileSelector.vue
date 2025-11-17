@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex gap-1">
+  <div class="d-flex ga-1 align-center">
     <v-btn
       v-if="!store.state.showFileExplorer"
       :icon="`svg:${mdiFileMultiple}`"
