@@ -21,6 +21,7 @@ import parserBabel from 'prettier/plugins/babel'
 import parserHtml from 'prettier/plugins/html'
 import parserPostcss from 'prettier/plugins/postcss'
 import prettier from 'prettier/standalone'
+import debounce from 'lodash-es/debounce'
 
 const props = withDefaults(
   defineProps<{
@@ -149,8 +150,21 @@ onMounted(async () => {
     store.state.showFileExplorer = !store.state.showFileExplorer
   })
 
-  editorInstance.onDidChangeModelContent(() => {
+  function onUpdate () {
     emit('change', editorInstance.getValue())
+  }
+
+  let debouncedUpdate = debounce(onUpdate, 2000)
+
+  watch(() => !!store.state.errors.length, hasErrors => {
+    debouncedUpdate.cancel()
+    debouncedUpdate = hasErrors
+      ? debounce(onUpdate, 5000)
+      : debounce(onUpdate, 2000)
+  })
+
+  editorInstance.onDidChangeModelContent(() => {
+    debouncedUpdate()
   })
 
   editorInstance.onDidBlurEditorWidget(async () => {
@@ -178,6 +192,7 @@ onMounted(async () => {
     } catch (err) {}
 
     if (code !== props.value) {
+      debouncedUpdate.cancel()
       emit('change', code)
     }
   })
