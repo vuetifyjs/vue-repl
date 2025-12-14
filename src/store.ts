@@ -93,7 +93,6 @@ export interface StoreState {
   resetFlip: boolean
   /** \{ dependencyName: version \} */
   dependencyVersion?: Record<string, string>
-  wordWrap?: boolean
   showFileExplorer: boolean
 }
 
@@ -172,9 +171,8 @@ export class ReplStore implements Store {
     }
 
     const savedShowFileExplorer = localStorage.getItem('showFileExplorer')
-    const showFileExplorer = savedShowFileExplorer !== null
-      ? savedShowFileExplorer === 'true'
-      : true
+    const showFileExplorer =
+      savedShowFileExplorer !== null ? savedShowFileExplorer === 'true' : true
 
     this.state = reactive({
       mainFile,

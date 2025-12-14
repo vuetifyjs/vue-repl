@@ -43,6 +43,8 @@ const containerRef = ref<HTMLDivElement>()
 const ready = ref(false)
 const editor = shallowRef<monaco.editor.IStandaloneCodeEditor>()
 const store = inject<Store>('store')!
+const autoFormat = inject<Ref<boolean>>('autoFormat', ref(true))
+const wordWrap = inject<Ref<boolean>>('wordWrap', ref(false))
 
 initMonaco(store)
 
@@ -72,7 +74,7 @@ onMounted(async () => {
     },
     'semanticHighlighting.enabled': true,
     fixedOverflowWidgets: true,
-    wordWrap: store.state.wordWrap ? 'on' : 'off',
+    wordWrap: wordWrap.value ? 'on' : 'off',
   })
   editor.value = editorInstance
 
@@ -104,7 +106,7 @@ onMounted(async () => {
 
     editorInstance.updateOptions({
       readOnly: props.readonly,
-      wordWrap: store.state.wordWrap ? 'on' : 'off',
+      wordWrap: wordWrap.value ? 'on' : 'off',
       theme: replTheme.value === 'light' ? theme.light : theme.dark,
     })
   })
@@ -143,25 +145,28 @@ onMounted(async () => {
   })
 
   editorInstance.addCommand(monaco.KeyMod.Alt | monaco.KeyCode.KeyZ, () => {
-    store.state.wordWrap = !store.state.wordWrap
+    wordWrap.value = !wordWrap.value
   })
 
   editorInstance.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyB, () => {
     store.state.showFileExplorer = !store.state.showFileExplorer
   })
 
-  function onUpdate () {
+  function onUpdate() {
     emit('change', editorInstance.getValue())
   }
 
   let debouncedUpdate = debounce(onUpdate, 2000)
 
-  watch(() => !!store.state.errors.length, hasErrors => {
-    debouncedUpdate.cancel()
-    debouncedUpdate = hasErrors
-      ? debounce(onUpdate, 5000)
-      : debounce(onUpdate, 2000)
-  })
+  watch(
+    () => !!store.state.errors.length,
+    (hasErrors) => {
+      debouncedUpdate.cancel()
+      debouncedUpdate = hasErrors
+        ? debounce(onUpdate, 5000)
+        : debounce(onUpdate, 2000)
+    }
+  )
 
   editorInstance.onDidChangeModelContent(() => {
     debouncedUpdate()
@@ -188,7 +193,9 @@ onMounted(async () => {
 
     let code = editorInstance.getValue()
     try {
-      code = await prettier.format(code, options)
+      if (autoFormat.value) {
+        code = await prettier.format(code, options)
+      }
     } catch (err) {}
 
     if (code !== props.value) {

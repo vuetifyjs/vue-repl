@@ -67,7 +67,7 @@ pre {
 
 .msg {
   position: absolute;
-  bottom: 50px;
+  bottom: 0;
   left: 8px;
   right: 20px;
   z-index: 10;

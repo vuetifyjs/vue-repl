@@ -20,6 +20,9 @@ export interface Props {
   layout?: 'horizontal' | 'vertical'
   ssr?: boolean
   readonly?: boolean
+  showError?: boolean
+  autoFormat?: boolean
+  wordWrap?: boolean
   previewOptions?: {
     headHTML?: string
     bodyHTML?: string
@@ -82,6 +85,9 @@ provide('clear-console', toRef(props, 'clearConsole'))
 provide('preview-options', props.previewOptions)
 provide('theme', toRef(props, 'theme'))
 provide('readonly', toRef(props, 'readonly'))
+provide('showError', toRef(props, 'showError'))
+provide('autoFormat', toRef(props, 'autoFormat'))
+provide('wordWrap', toRef(props, 'wordWrap'))
 /**
  * Reload the preview iframe
  */

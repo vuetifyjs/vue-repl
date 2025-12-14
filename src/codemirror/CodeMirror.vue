@@ -29,6 +29,7 @@ const emit = defineEmits<(e: 'change', value: string) => void>()
 
 const el = ref()
 const needAutoResize = inject('autoresize')
+const autoFormat = inject('autoFormat', ref(true))
 
 onMounted(() => {
   const addonOptions = {
@@ -37,9 +38,9 @@ onMounted(() => {
     foldGutter: true,
     gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
     extraKeys: {
-      'Tab': 'emmetExpandAbbreviation',
-      'Esc': 'emmetResetAbbreviation',
-      'Enter': 'emmetInsertLineBreak'
+      Tab: 'emmetExpandAbbreviation',
+      Esc: 'emmetResetAbbreviation',
+      Enter: 'emmetInsertLineBreak',
     },
     emmet: {
       mark: true,
@@ -47,7 +48,7 @@ onMounted(() => {
       previewOpenTag: true,
       preview: true,
       autoRenameTags: true,
-    }
+    },
   }
 
   const editor = CodeMirror(el.value!, {
@@ -58,7 +59,7 @@ onMounted(() => {
     lineWrapping: true,
     lineNumbers: true,
     inputStyle: 'contenteditable',
-    ...addonOptions
+    ...addonOptions,
   })
 
   editor.on('change', () => {
@@ -66,12 +67,18 @@ onMounted(() => {
   })
 
   editor.on('blur', async () => {
-    const parser = props.extension === 'vue' ? 'html'
-      : props.extension === 'html' ? 'html'
-      : props.extension === 'css' ? 'css'
-      : props.extension === 'js' ? 'babel'
-      : props.extension === 'ts' ? 'babel'
-      : props.extension || props.mode
+    const parser =
+      props.extension === 'vue'
+        ? 'html'
+        : props.extension === 'html'
+          ? 'html'
+          : props.extension === 'css'
+            ? 'css'
+            : props.extension === 'js'
+              ? 'babel'
+              : props.extension === 'ts'
+                ? 'babel'
+                : props.extension || props.mode
 
     const options = {
       parser,
@@ -83,7 +90,9 @@ onMounted(() => {
 
     let code = editor.getValue()
     try {
-      code = await prettier.format(code, options)
+      if (autoFormat.value) {
+        code = await prettier.format(code, options)
+      }
     } catch (err) {}
 
     emit('change', code)
