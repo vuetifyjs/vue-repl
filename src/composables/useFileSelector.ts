@@ -9,23 +9,29 @@ import {
   mdiFileOutline,
 } from '@mdi/js'
 
+/**
+ * When `true`: indicates adding a new file
+ * When `string`: indicates renaming a file, and holds the old filename in case
+ * of cancel.
+ */
+const pending = ref<boolean | string>(false)
+/**
+ * Text shown in the input box when editing a file's name
+ * This is a display name so it should always strip off the `src/` prefix.
+ */
+const pendingFilename = ref('Comp.vue')
+
+// Currently active file in the context menu
+const menuActiveFile = ref<string>('')
+
+const renameMenu = ref(false)
+
 export function useFileSelector() {
   const store = inject('store') as Store
-
-  /**
-   * When `true`: indicates adding a new file
-   * When `string`: indicates renaming a file, and holds the old filename in case
-   * of cancel.
-   */
-  const pending = ref<boolean | string>(false)
-  /**
-   * Text shown in the input box when editing a file's name
-   * This is a display name so it should always strip off the `src/` prefix.
-   */
-  const pendingFilename = ref('Comp.vue')
-  const linksFile = 'links.json'
   const showTsConfig = inject<Ref<boolean>>('tsconfig')
   const showImportMap = inject('import-map') as Ref<boolean>
+  const linksFile = 'links.json'
+
   const files = computed(() =>
     Object.entries(store.state.files)
       .filter(
@@ -149,10 +155,6 @@ export function useFileSelector() {
     files,
     pending,
     pendingFilename,
-    startAddFile,
-    cancelNameFile,
-    focus,
-    doneNameFile,
     fileSel,
     activeFile,
     showTsConfig,
@@ -160,6 +162,13 @@ export function useFileSelector() {
     linksFile,
     tsconfigFile,
     importMapFile,
+    menuActiveFile,
+    renameMenu,
+
+    startAddFile,
+    cancelNameFile,
+    focus,
+    doneNameFile,
     stripSrcPrefix,
     getFileIcon,
     getFileIconColor,

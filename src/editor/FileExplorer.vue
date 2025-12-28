@@ -32,34 +32,12 @@
       density="compact"
       max-height="calc(100% - 44px)"
     >
-      <v-list-item
+      <FileItem
         v-for="file in files"
         :key="file"
-        :value="file"
-        rounded
-        :title="stripSrcPrefix(file)"
-        slim
-        @click="activeFile = file"
-      >
-        <template v-slot:prepend>
-          <v-icon
-            :icon="`svg:${getFileIcon(file)}`"
-            :color="getFileIconColor(file)"
-            size="small"
-          />
-        </template>
-
-        <template v-slot:append>
-          <v-icon-btn
-            v-if="!readonly"
-            icon="$close"
-            size="26"
-            icon-size="14"
-            variant="plain"
-            @click.stop="store.deleteFile(file)"
-          />
-        </template>
-      </v-list-item>
+        :file
+        :ref="(el) => setActiveListItem(el, file)"
+      />
 
       <v-text-field
         v-if="pending && !readonly"
@@ -77,6 +55,8 @@
         @keyup.esc="cancelNameFile"
       />
     </v-list>
+
+    <FileRename :list-item="listItem" :file="menuActiveFile" />
 
     <template v-slot:append>
       <v-divider />
@@ -120,8 +100,12 @@
 <script setup lang="ts">
 import type { Store } from 'src/store'
 import { inject, ref } from 'vue'
+import { useHotkey } from 'vuetify'
 import { useFileSelector } from '../composables/useFileSelector'
-import { VIconBtn } from 'vuetify/labs/components'
+
+import FileItem from './FileItem.vue'
+import FileRename from './FileRename.vue'
+
 import {
   mdiFilePlusOutline,
   mdiLanguageTypescript,
@@ -137,17 +121,42 @@ const {
   activeFile,
   showImportMap,
   files,
-  stripSrcPrefix,
   pending,
   pendingFilename,
-  doneNameFile,
-  cancelNameFile,
-  startAddFile,
   tsconfigFile,
   showTsConfig,
   importMapFile,
   linksFile,
+  menuActiveFile,
+  renameMenu,
+
+  doneNameFile,
+  cancelNameFile,
+  startAddFile,
   getFileIcon,
-  getFileIconColor,
 } = useFileSelector()
+
+const listItem = ref<any>(null)
+
+useHotkey('f2', handleRename)
+useHotkey('cmd+backspace', handleDelete)
+
+function setActiveListItem(el: any, file: string) {
+  if (menuActiveFile.value !== file) return
+
+  listItem.value = el
+}
+
+function handleRename() {
+  if (readonly.value) return
+
+  menuActiveFile.value = activeFile.value
+  renameMenu.value = true
+}
+
+function handleDelete() {
+  if (readonly.value) return
+
+  store.deleteFile(activeFile.value)
+}
 </script>
