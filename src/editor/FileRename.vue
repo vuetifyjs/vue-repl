@@ -14,13 +14,13 @@
           v-if="!readonly"
           v-model="newFilename"
           density="compact"
-          hide-details
+          hide-details="auto"
           autofocus
-          single-line
           :prepend-inner-icon="`svg:${getFileIcon(menuActiveFile)}`"
           base-color="primary"
           color="primary"
           variant="outlined"
+          :rules="rules"
           @keydown.enter="doneRename"
           @keydown.esc="renameMenu = false"
         />
@@ -62,9 +62,14 @@ const { mobile } = useDisplay()
 
 const newFilename = ref('')
 
+const rules = [
+  (v: string) => !!v || 'Filename cannot be empty',
+  (v: string) => isValidFilename(v) || 'A file with this name already exists',
+]
+
 const isValidRename = computed(
   () =>
-    newFilename.value.trim() !== '' &&
+    rules.every((rule) => rule(newFilename.value) === true) &&
     newFilename.value !== menuActiveFile.value
 )
 
@@ -73,6 +78,12 @@ watch(renameMenu, (newVal) => {
 
   newFilename.value = menuActiveFile.value.replace(/^src\//, '')
 })
+
+function isValidFilename(filename: string) {
+  return Object.keys(store.state.files).every(
+    (file) => file === menuActiveFile.value || file !== `src/${filename}`
+  )
+}
 
 function doneRename() {
   if (!isValidRename.value) return
