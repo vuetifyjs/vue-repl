@@ -2,7 +2,7 @@
   <component :is="mobile ? VDialog : VMenu" max-width="450">
     <template v-slot:activator="{ props }">
       <v-icon-btn
-        icon="mdi-dots-vertical"
+        :icon="`svg:${mdiDotsVertical}`"
         size="small"
         variant="text"
         v-bind="props"
@@ -20,7 +20,7 @@
     >
       <v-list-item size="small" title="Rename" @click="renameMenu = true">
         <template v-slot:prepend>
-          <v-icon size="small" icon="mdi-pencil" />
+          <v-icon size="small" :icon="`svg:${mdiPencil}`" />
         </template>
 
         <template v-slot:append>
@@ -32,7 +32,7 @@
 
       <v-list-item title="Delete" @click="store.deleteFile(file)">
         <template v-slot:prepend>
-          <v-icon size="small" icon="mdi-delete" />
+          <v-icon size="small" :icon="`svg:${mdiDelete}`" />
         </template>
 
         <template v-slot:append>
@@ -40,7 +40,7 @@
         </template>
       </v-list-item>
     </v-list>
-  </v-menu>
+  </component>
 </template>
 
 <script lang="ts" setup>
@@ -48,6 +48,7 @@ import type { Store } from 'src/store'
 import { inject } from 'vue'
 import { useFileSelector } from '../composables/useFileSelector'
 import { VIconBtn } from 'vuetify/labs/components'
+import { mdiDelete, mdiDotsVertical, mdiPencil } from '@mdi/js'
 import { VDialog, VMenu } from 'vuetify/components'
 import { useDisplay } from 'vuetify'
 
