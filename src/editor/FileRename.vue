@@ -52,7 +52,7 @@ import { useFileSelector } from '../composables/useFileSelector'
 import { useDisplay } from 'vuetify'
 import { VDialog, VMenu } from 'vuetify/components'
 
-const props = defineProps<{ listItem: any }>()
+defineProps<{ listItem: any }>()
 
 const store = inject('store') as Store
 const readonly = inject('readonly', ref(false))

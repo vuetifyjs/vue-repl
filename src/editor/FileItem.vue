@@ -25,7 +25,7 @@ import { inject, ref } from 'vue'
 import { useFileSelector } from '../composables/useFileSelector'
 import FileItemActions from './FileItemActions.vue'
 
-const props = defineProps<{ file: string }>()
+defineProps<{ file: string }>()
 
 const readonly = inject('readonly', ref(false))
 

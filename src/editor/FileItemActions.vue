@@ -42,7 +42,7 @@ import { inject } from 'vue'
 import { useFileSelector } from '../composables/useFileSelector'
 import { VIconBtn } from 'vuetify/labs/components'
 
-const props = defineProps<{ file: string }>()
+defineProps<{ file: string }>()
 
 const store = inject('store') as Store
 
