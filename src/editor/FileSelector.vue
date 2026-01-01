@@ -1,12 +1,11 @@
 <template>
-  <div class="d-flex ga-1 align-center">
+  <div class="d-flex align-center justify-center">
     <v-btn
       v-if="!store.state.showFileExplorer"
-      :icon="`svg:${mdiFileMultiple}`"
-      :ripple="false"
-      variant="plain"
+      :icon="`svg:${mdiDockLeft}`"
+      variant="flat"
       size="small"
-      min-width="46px"
+      class="mx-1"
       @click="store.state.showFileExplorer = true"
     />
     <v-tabs
@@ -50,7 +49,7 @@
 import { inject, watch, ref, nextTick, computed } from 'vue'
 import { Store } from '../store'
 import { useFileSelector } from '../composables/useFileSelector'
-import { mdiFileMultiple } from '@mdi/js'
+import { mdiDockLeft } from '@mdi/js'
 import { VIconBtn } from 'vuetify/labs/components'
 import { useDisplay } from 'vuetify'
 
