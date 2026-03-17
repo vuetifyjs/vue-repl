@@ -18,6 +18,7 @@ import { loadGrammars, loadTheme } from 'monaco-volar'
 import { Store } from '../store'
 import type { PreviewMode } from '../editor/types'
 import parserBabel from 'prettier/plugins/babel'
+import parserEstree from "prettier/plugins/estree";
 import parserHtml from 'prettier/plugins/html'
 import parserPostcss from 'prettier/plugins/postcss'
 import prettier from 'prettier/standalone'
@@ -60,6 +61,32 @@ onMounted(async () => {
     throw new Error('Cannot find containerRef')
   }
 
+  // TODO: dedup
+  function getPrettierOptions (parser?: string) {
+    return {
+      parser,
+      plugins: [parserBabel, parserHtml, parserPostcss, parserEstree],
+      semi: false,
+      singleQuote: true,
+      arrowParens: 'avoid' as const,
+    }
+  }
+
+  [
+    { lang: 'typescript', parser: 'babel' },
+    { lang: 'javascript', parser: 'babel' },
+    { lang: 'vue', parser: 'vue' },
+    { lang: 'css', parser: 'css' },
+    { lang: 'json', parser: 'json' },
+  ].forEach(({ lang, parser }) => {
+    monaco.languages.registerDocumentFormattingEditProvider(lang, {
+      async provideDocumentFormattingEdits(model, options) {
+        const text = await prettier.format(model.getValue(), getPrettierOptions(parser));
+        return [{ range: model.getFullModelRange(), text }];
+      },
+    })
+  })
+
   const editorInstance = monaco.editor.create(containerRef.value, {
     fontSize: 13,
     theme: replTheme.value === 'light' ? theme.light : theme.dark,
@@ -101,8 +128,13 @@ onMounted(async () => {
   }
 
   watchEffect(() => {
-    if (editorInstance.getValue() !== props.value)
-      editorInstance.setValue(props.value || '')
+    if (editorInstance.getValue() !== props.value) {
+      const position = editorInstance.getPosition();
+      editorInstance.setValue(props.value || "");
+      if (position) {
+        editorInstance.setPosition(position);
+      }
+    }
 
     editorInstance.updateOptions({
       readOnly: props.readonly,
@@ -183,13 +215,7 @@ onMounted(async () => {
         json: 'json',
       }[extension.value!] || props.mode
 
-    const options = {
-      parser,
-      plugins: [parserBabel, parserHtml, parserPostcss],
-      semi: false,
-      singleQuote: true,
-      arrowParens: 'avoid' as const,
-    }
+    const options = getPrettierOptions(parser)
 
     let code = editorInstance.getValue()
     try {
@@ -204,6 +230,18 @@ onMounted(async () => {
     }
   })
 })
+
+async function format () {
+  try {
+    const action = editor.value?.getAction('editor.action.formatDocument')
+    await action?.run()
+  }
+  catch (err) {
+    console.error('[Vuetify » @vue/repl] Failed to format document', err)
+  }
+}
+
+defineExpose({ format })
 
 onBeforeUnmount(() => {
   editor.value?.dispose()

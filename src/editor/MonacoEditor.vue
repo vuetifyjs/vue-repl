@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useTemplateRef } from 'vue'
 import Monaco from '../monaco/Monaco.vue'
 import type { EditorEmits, EditorProps } from './types'
 
@@ -12,10 +13,19 @@ defineOptions({
 const onChange = (code: string) => {
   emit('change', code)
 }
+
+const editor = useTemplateRef<typeof Monaco>('monaco')
+
+function format () {
+  editor.value?.format()
+}
+
+defineExpose({ format })
 </script>
 
 <template>
   <Monaco
+    ref="monaco"
     @change="onChange"
     :filename="filename"
     :value="value"
