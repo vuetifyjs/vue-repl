@@ -50,7 +50,7 @@ import { inject, watch, ref, nextTick, computed } from 'vue'
 import { Store } from '../store'
 import { useFileSelector } from '../composables/useFileSelector'
 import { mdiDockLeft } from '@mdi/js'
-import { VIconBtn } from 'vuetify/labs/components'
+import { VIconBtn } from 'vuetify/components'
 import { useDisplay } from 'vuetify'
 
 const MAX_RECENT_FILES = 10

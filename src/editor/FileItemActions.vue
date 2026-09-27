@@ -47,7 +47,7 @@
 import type { Store } from 'src/store'
 import { inject } from 'vue'
 import { useFileSelector } from '../composables/useFileSelector'
-import { VIconBtn } from 'vuetify/labs/components'
+import { VIconBtn } from 'vuetify/components'
 import { mdiDelete, mdiDotsVertical, mdiPencil } from '@mdi/js'
 import { VDialog, VMenu } from 'vuetify/components'
 import { useDisplay } from 'vuetify'
